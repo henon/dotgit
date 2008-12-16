@@ -17,9 +17,9 @@ namespace TestConsole
   {
     static void Main(string[] args)
     {
-      Repository repo = Repository.Open(@"C:\Projects\dotGit");
+      Repository repo = Repository.Open(@"F:\code\dotgit");
       Console.WriteLine(repo.Storage);
-
+      
 
       WalkTree(repo.HEAD.Commit.Tree, 0);
 
