@@ -17,7 +17,7 @@ namespace Test
 			 _testRepositoryPath = Path.Combine(Global.AssemblyDir, @"Resources\TestRepo");
 		}
 
-		public static string RestRepositoryPath
+		public static string TestRepositoryPath
 		{
 			get { return _testRepositoryPath; }
 		}

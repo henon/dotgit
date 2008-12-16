@@ -32,7 +32,7 @@ namespace Test
 		[Test]
 		public void RepositoryShouldNotThrowExceptionWhenWalkingTree()
 		{
-			Repository repo = Repository.Open(Global.RestRepositoryPath);
+			Repository repo = Repository.Open(Global.TestRepositoryPath);
 			try
 			{
 				WalkHistory(repo.HEAD.Commit);
@@ -45,9 +45,9 @@ namespace Test
 		}
 
 		[Test]
-		public void RepositoryShouldContainTag()
+		public void TestRepositoryShouldContainTagZeroPointOne()
 		{
-			Repository repo = Repository.Open(Global.RestRepositoryPath);
+			Repository repo = Repository.Open(Global.TestRepositoryPath);
 			try
 			{
 				Tag t = repo.Tags["0.1-alpha"];
@@ -58,6 +58,46 @@ namespace Test
 				Assert.IsTrue(false, "Tag '0.1-alpha' should be in test repository, caught: {0}".FormatWith(ex));
 			}
 		}
+
+    [Test]
+    public void TestRepositoryShouldThrowIndexOutOfRangeExceptionForInvalidTag()
+    {
+      Repository repo = Repository.Open(Global.TestRepositoryPath);
+      try
+      {
+        Tag t = repo.Tags["TagThatDoesNotExist"];
+        Assert.IsNull(t, "dotGit should return null when fethcing a tag that doesn't exist");
+      }
+      catch (IndexOutOfRangeException)
+      {
+        Assert.IsTrue(true);
+      }
+      catch(Exception ex)
+      {
+        Assert.IsTrue(false, "Tag getter should not throw exception other then IndexOutOfRangeException, caught: {0}".FormatWith(ex));
+      }
+    }
+
+
+    [Test]
+    public void SHAOfTagZeroPointOneShouldBeTestRepositorySHA()
+    {
+      Repository repo = Repository.Open(Global.TestRepositoryPath);
+      try
+      {
+        Tag t = repo.Tags["0.1-alpha"];
+        Assert.IsTrue(String.Equals(t.SHA.ToLower(), "945ec04f178784065ffc4ed494f1f0a81af7b891"));
+      }
+      catch (IndexOutOfRangeException ex)
+      {
+        Assert.IsTrue(false, "Tag '0.1-alpha' should be in test repository, caught: {0}".FormatWith(ex));
+      }
+      catch (Exception ex)
+      {
+        Assert.IsTrue(false, "Tag getter should not throw exception other then IndexOutOfRangeException, caught: {0}".FormatWith(ex));
+      }
+    }
+
 
 		private void WalkHistory(Commit commit)
 		{

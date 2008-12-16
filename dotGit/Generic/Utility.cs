@@ -118,7 +118,7 @@ namespace dotGit.Objects
 			}
 
 			// Create the info/exclude file
-			using (StreamWriter sw = new StreamWriter(File.OpenRead(Path.Combine(path, @"info\exclude"))))
+			using (StreamWriter sw = new StreamWriter(File.OpenWrite(Path.Combine(path, @"info\exclude"))))
 			{
 				sw.WriteLine("# git-ls-files --others --exclude-from=.git/info/exclude");
 				sw.WriteLine("# Lines that start with '#' are comments.");
@@ -147,7 +147,7 @@ namespace dotGit.Objects
 			}
 		}
 
-		public static void FileCopy(string srcdir, string destdir, bool recursive)
+		private static void FileCopy(string srcdir, string destdir, bool recursive)
 		{
 			DirectoryInfo dir;
 			FileInfo[] files;
