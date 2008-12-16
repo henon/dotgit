@@ -1,3 +1,9 @@
+Apology
+=======
+
+I accidentally pressed the 'Make private' button on GitHub so the project seems to have lost all of it's watchers. I'm sorry...
+
+
 dotGit
 ======
 
@@ -11,4 +17,4 @@ If it's your first time looking at the source have a look at the class diagram i
 Bugs / Features
 ===============
 
-If you find any bugs or would like to see a feature implemented please report it at http://pheew.lighthouseapp.com/projects/21305/home
+If you find any bugs or would like to see a feature implemented please report it at the [Lighthouse project](http://pheew.lighthouseapp.com/projects/21305/home)
