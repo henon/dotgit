@@ -11,6 +11,7 @@ using dotGit.Objects;
 using dotGit.Refs;
 using IDX = dotGit.Index;
 using dotGit.Generic;
+using dotGit.Config;
 
 namespace dotGit
 {
@@ -21,9 +22,11 @@ namespace dotGit
 	{
 		#region Fields
 
+    private Configuration _configuration = null;
+
 		private Head _head = null;
 		private ObjectStorage _storage = null;
-		private RefCollection<Branch> _branches = null;
+		private RefCollection<Refs.Branch> _branches = null;
 		private RefCollection<Tag> _tags = null;
 		private PackedRefs _packedRefs = null;
 		private IDX.Index _index = null;
@@ -53,6 +56,8 @@ namespace dotGit
 			}
 			else
 				throw new RepositoryNotFoundException("'{0}' could not be opened as a git repository".FormatWith(path));
+
+      _configuration = new Configuration(this);
 		}
 
 		/// <summary>
@@ -95,7 +100,7 @@ namespace dotGit
 		{
 			string[] branches = Directory.GetFiles(Path.Combine(GitDir.FullName, @"refs\heads"));
 
-			_branches = new RefCollection<Branch>(branches.Length);
+      _branches = new RefCollection<Refs.Branch>(branches.Length);
 
 			try
 			{
@@ -106,13 +111,13 @@ namespace dotGit
 				{
 					string sha = File.ReadAllText(file).Trim();
 
-					_branches.Add(new Branch(this, Path.Combine(@"refs\heads", Path.GetFileName(file)), sha));
+          _branches.Add(new Refs.Branch(this, Path.Combine(@"refs\heads", Path.GetFileName(file)), sha));
 				}
 
 				string[] paths = _packedRefs.Keys.Where(path => path.StartsWith("refs/heads")).ToArray();
 				foreach (string path in paths)
 				{
-					_branches.Add(new Branch(this, path, _packedRefs[path]));
+          _branches.Add(new Refs.Branch(this, path, _packedRefs[path]));
 				}
 			}
 			catch (Exception)
@@ -191,7 +196,7 @@ namespace dotGit
 		/// <summary>
 		/// All branches in this repository
 		/// </summary>
-		public RefCollection<Branch> Branches
+    public RefCollection<Refs.Branch> Branches
 		{
 			get
 			{
@@ -264,6 +269,20 @@ namespace dotGit
 			}
 		}
 
+    /// <summary>
+    /// Provides access to both repository settings and the global Git configuration.
+    /// </summary>
+    public Configuration Config
+    {
+      get
+      {
+        // TODO : On Demand loading doesn't work (setting properties not possible)
+        // Maybe a FileWatcher to detect changes in config ?
+        return _configuration;
+      }
+    }
+
+    
 		#endregion
 
 	}
