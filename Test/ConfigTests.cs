@@ -152,6 +152,7 @@ namespace Test
 
     }
 
+    [Test]
     public void SavingConfigurationShouldNotMessUpUnknownConfigValues()
     {
       Assert.IsTrue(false, "To be determined");
