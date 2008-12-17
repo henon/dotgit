@@ -151,5 +151,10 @@ namespace Test
       Assert.IsTrue(afterSave.Url== newRemote.Url, "New remote url is not persisted");
 
     }
+
+    public void SavingConfigurationShouldNotMessUpUnknownConfigValues()
+    {
+      Assert.IsTrue(false, "To be determined");
+    }
 	}
 }
