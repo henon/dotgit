@@ -26,7 +26,7 @@ namespace Test
       if (File.Exists(newConfigFilePath))
         File.Delete(newConfigFilePath);
 
-      config = Configuration.Read(path);
+      config = Configuration.Load(path);
     }
 
     [TearDown]
@@ -42,7 +42,10 @@ namespace Test
     [Test]
     public void InitializeConfigShouldReturnFreshConfiguration()
     {
-      config = Configuration.New();
+      if (File.Exists(newConfigFilePath))
+        File.Delete(newConfigFilePath);
+
+      Configuration config2 = Configuration.Create(newConfigFilePath);
 
       Assert.IsNotNull(config, "configuration cannot be null after calling constructor");
       Assert.IsNotNull(config.Core, "Config.Core cannot be null after reading/creating configuration");
@@ -50,14 +53,25 @@ namespace Test
     }
 
     [Test]
+    [ExpectedException(ExceptionType=typeof(IOException), UserMessage="Cannot recreate config file which already exists")]
+    public void InitializeConfigWhichAlreadyExistsShouldThrowException()
+    {
+      if (File.Exists(newConfigFilePath))
+        File.Delete(newConfigFilePath);
+
+      Configuration config2 = Configuration.Create(newConfigFilePath);
+      Configuration config3 = Configuration.Create(newConfigFilePath);
+       
+      
+    }
+
+    [Test]
     public void InitializeConfigWithPathParameterShouldReturnNewFile()
     {
-      Configuration config2 = Configuration.New(newConfigFilePath);
+      Configuration config2 = Configuration.Create(newConfigFilePath);
 
       Assert.IsTrue(File.Exists(newConfigFilePath), "New configuration file was not created on filesystem");
       Assert.IsFalse(String.IsNullOrEmpty(File.ReadAllText(newConfigFilePath)), "New configuration file cannot be empty. Core section should exist");
-
-
       
     }
 
@@ -70,7 +84,7 @@ namespace Test
     [Test]
     public void ReloadConfigurationShouldReturnOldValues()
     {
-      Configuration config2 = Configuration.Read(path);
+      Configuration config2 = Configuration.Load(path);
 
       config.Core.IgnoreCase = !config.Core.IgnoreCase;
       config.Reload();
