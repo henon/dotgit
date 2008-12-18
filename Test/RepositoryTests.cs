@@ -93,10 +93,6 @@ namespace Test
       {
         Assert.IsTrue(false, "Tag '0.1-alpha' should be in test repository, caught: {0}".FormatWith(ex));
       }
-      catch (Exception ex)
-      {
-        Assert.IsTrue(false, "Tag getter should not throw exception other then IndexOutOfRangeException, caught: {0}".FormatWith(ex));
-      }
     }
 
 
