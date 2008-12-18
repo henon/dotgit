@@ -105,14 +105,22 @@ namespace Test
     [Test]
     public void ConfigSymLinksShouldBeSettable()
     {
-      Repository repo = Repository.Open(Global.TestRepositoryPath);
-      bool initial = repo.Config.Core.SymLinks;
-      repo.Config.Core.SymLinks = !initial;
+      
+      bool initial = config.Core.SymLinks;
+      config.Core.SymLinks = !initial;
 
-      Assert.IsTrue(repo.Config.Core.SymLinks != initial, "SymLinks should be {0} after setting it".FormatWith(!initial));
+      Assert.IsTrue(config.Core.SymLinks != initial, "SymLinks should be {0} after setting it".FormatWith(!initial));
+    }
+
+    [Test]
+    public void OriginShouldBeTestRepositoryAtGitHub()
+    {
+      Assert.IsTrue(String.Equals(config.Remotes["origin"].Url, "git@github.com:pheew/dotgittestrepo.git"), "Repository is not 'origin'ated at github test repository");
     }
 
     #endregion
+
+    #region Test Repository
 
     [Test]
     public void ConfigShouldBeNonEmptyForTestRepository()
@@ -138,33 +146,25 @@ namespace Test
     public void RemotesShouldThrowExceptionOnUnknownKey()
     {
       Repository repo = Repository.Open(Global.TestRepositoryPath);
-      Console.WriteLine(repo.Config.Remotes["asdasasdsadadadsdasdasd"]);
-    }
-
-
-    [Test]
-    public void OriginShouldBeTestRepositoryAtGitHub()
-    {
-      Repository repo = Repository.Open(Global.TestRepositoryPath);
-      Assert.IsTrue(String.Equals(repo.Config.Remotes["origin"].Url, "git@github.com:pheew/dotgittestrepo.git"), "Repository is not 'origin'ated at github test repository");
+      Console.WriteLine(repo.Config.Remotes[Guid.NewGuid().ToString()]);
     }
 
     [Test]
     public void CoreSectionShouldContainStandardEntries()
     {
-      Repository repo = Repository.Open(Global.TestRepositoryPath);
-      Assert.IsNotNull( repo.Config.Core.Bare, "Config.Bare cannot be null");
-      Assert.IsNotNull( repo.Config.Core.SymLinks, "Config.SymLinks cannot be null");
-      Assert.IsNotNull( repo.Config.Core.FileMode, "Config.FileMode cannot be null");
-      Assert.IsNotNull(repo.Config.Core.IgnoreCase, "Config.IgnoreCase cannot be null");
-      Assert.IsNotNull(repo.Config.Core.RepositoryFormatVersion, "Config.RepositoryFormatVersion cannot be null");
+      
+      Assert.IsNotNull( config.Core.Bare, "Config.Bare cannot be null");
+      Assert.IsNotNull( config.Core.SymLinks, "Config.SymLinks cannot be null");
+      Assert.IsNotNull( config.Core.FileMode, "Config.FileMode cannot be null");
+      Assert.IsNotNull(config.Core.IgnoreCase, "Config.IgnoreCase cannot be null");
+      Assert.IsNotNull(config.Core.RepositoryFormatVersion, "Config.RepositoryFormatVersion cannot be null");
 
-      Assert.IsInstanceOfType(typeof(bool), repo.Config.Core.Bare, "Config.Bare is not of type boolean");
-      Assert.IsInstanceOfType(typeof(bool), repo.Config.Core.SymLinks, "Config.SymLinks is not of type boolean");
-      Assert.IsInstanceOfType(typeof(bool), repo.Config.Core.FileMode, "Config.FileMode is not of type boolean");
-      Assert.IsInstanceOfType(typeof(bool), repo.Config.Core.IgnoreCase, "Config.IgnoreCase is not of type boolean");
-      Assert.IsInstanceOfType(typeof(string), repo.Config.Core.RepositoryFormatVersion, "Config.RepositoryFormatVersion is not of type string");
-      Assert.IsInstanceOfType(typeof(bool), repo.Config.Core.LogAllRefUpdates, "Config.LogAllRefUpdates is not of type boolean");
+      Assert.IsInstanceOfType(typeof(bool), config.Core.Bare, "Config.Bare is not of type boolean");
+      Assert.IsInstanceOfType(typeof(bool), config.Core.SymLinks, "Config.SymLinks is not of type boolean");
+      Assert.IsInstanceOfType(typeof(bool), config.Core.FileMode, "Config.FileMode is not of type boolean");
+      Assert.IsInstanceOfType(typeof(bool), config.Core.IgnoreCase, "Config.IgnoreCase is not of type boolean");
+      Assert.IsInstanceOfType(typeof(string), config.Core.RepositoryFormatVersion, "Config.RepositoryFormatVersion is not of type string");
+      Assert.IsInstanceOfType(typeof(bool), config.Core.LogAllRefUpdates, "Config.LogAllRefUpdates is not of type boolean");
 
     }
 
@@ -179,6 +179,8 @@ namespace Test
 
       Assert.IsTrue(repo.Config.Remotes.Count > 0, "Test respository should contain at least one remote");
     }
+
+    #endregion
 
     [Test]
     public void SavingUserEmailChangeShouldPersistSettings()
