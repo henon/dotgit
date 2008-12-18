@@ -18,21 +18,47 @@ namespace Test
 
     dotGit.Config.Configuration config;
     string path = Path.Combine(Global.AssemblyDir, @"Resources\config");
+    string newConfigFilePath = Path.Combine(Global.AssemblyDir, @"Resources\config-2");
+
     [SetUp]
     public void ReadConfig()
     {
+      if (File.Exists(newConfigFilePath))
+        File.Delete(newConfigFilePath);
+
       config = Configuration.Read(path);
     }
+
+    [TearDown]
+    public void TearDown()
+    {
+      if (File.Exists(newConfigFilePath))
+        File.Delete(newConfigFilePath);
+
+    }
+
 
     #region Test Basic Scenarios
     [Test]
     public void InitializeConfigShouldReturnFreshConfiguration()
     {
-      config = new dotGit.Config.Configuration();
+      config = Configuration.New();
 
       Assert.IsNotNull(config, "configuration cannot be null after calling constructor");
       Assert.IsNotNull(config.Core, "Config.Core cannot be null after reading/creating configuration");
       Assert.IsNotNull(config.User, "Config.User cannot be null after reading/creating configuration");
+    }
+
+    [Test]
+    public void InitializeConfigWithPathParameterShouldReturnNewFile()
+    {
+      Configuration config2 = Configuration.New(newConfigFilePath);
+
+      Assert.IsTrue(File.Exists(newConfigFilePath), "New configuration file was not created on filesystem");
+      Assert.IsFalse(String.IsNullOrEmpty(File.ReadAllText(newConfigFilePath)), "New configuration file cannot be empty. Core section should exist");
+
+
+      
     }
 
     [Test]
