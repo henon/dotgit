@@ -52,6 +52,7 @@
     <Compile Include="Config\Remote.cs" />
     <Compile Include="Config\Remotes.cs" />
     <Compile Include="Config\User.cs" />
+    <Compile Include="DiffEngine\Diff.cs" />
     <Compile Include="Exceptions\ObjectNotFoundException.cs" />
     <Compile Include="Exceptions\PackFileException.cs" />
     <Compile Include="Exceptions\ParseException.cs" />
@@ -102,9 +103,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Diff\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
