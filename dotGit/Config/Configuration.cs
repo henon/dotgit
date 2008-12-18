@@ -28,7 +28,9 @@ namespace dotGit.Config
 
     internal Configuration(Repository repository)
     {
-      ReadConfiguration(repository);
+      Repo = repository;
+
+      ReadConfiguration();
       ParseData();
     }
 
@@ -86,9 +88,9 @@ namespace dotGit.Config
 
     #endregion
 
-    private void ReadConfiguration(Repository repository)
+    private void ReadConfiguration()
     {
-      string config = File.ReadAllText(Path.Combine(repository.GitDir.FullName, "config"));
+      string config = File.ReadAllText(Path.Combine(Repo.GitDir.FullName, "config"));
 
 
 
@@ -147,7 +149,6 @@ namespace dotGit.Config
       {
         return _core;
       }
-
     }
     public User User
     {
@@ -166,6 +167,12 @@ namespace dotGit.Config
     {
       get { return _branches; }
     }
+
+    private Repository Repo
+    {
+      get;
+      set;
+    }
     #endregion
 
 
@@ -177,7 +184,8 @@ namespace dotGit.Config
 
     public void Reload()
     {
-      throw new NotImplementedException();
+      ReadConfiguration();
+      ParseData();
     }
     #endregion
 
