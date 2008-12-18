@@ -7,6 +7,7 @@ using dotGit;
 using System.IO;
 using dotGit.Objects;
 using dotGit.Refs;
+using dotGit.Config;
 
 
 namespace Test
@@ -14,6 +15,47 @@ namespace Test
 	[TestFixture]	
 	public class ConfigTests
   {
+
+    dotGit.Config.Configuration config;
+    string path = Path.Combine(Global.AssemblyDir, @"Resources\config");
+    [SetUp]
+    public void ReadConfig()
+    {
+      config = Configuration.Read(path);
+    }
+
+    #region Test Basic Scenarios
+    [Test]
+    public void InitializeConfigShouldReturnFreshConfiguration()
+    {
+      config = new dotGit.Config.Configuration();
+
+      Assert.IsNotNull(config, "configuration cannot be null after calling constructor");
+      Assert.IsNotNull(config.Core, "Config.Core cannot be null after reading/creating configuration");
+      Assert.IsNotNull(config.User, "Config.User cannot be null after reading/creating configuration");
+    }
+
+    [Test]
+    public void ReadConfiguration()
+    {
+      Assert.IsNotNull(config, "Configuration cannot be null after reading it");
+    }
+
+    [Test]
+    public void ReloadConfigurationShouldReturnOldValues()
+    {
+      Configuration config2 = Configuration.Read(path);
+
+      config.Core.IgnoreCase = !config.Core.IgnoreCase;
+      config.Reload();
+      Assert.IsTrue(config.Core.IgnoreCase == config2.Core.IgnoreCase, "After reloading values should reflect old (file) values");
+
+    }
+
+    #endregion
+
+    #region Getting / Setting
+
     [Test]
     public void ConfigUserNameShouldBeTest()
     {
@@ -70,14 +112,25 @@ namespace Test
       Assert.IsTrue(repo.Config.Core.SymLinks != initial, "SymLinks should be {0} after setting it".FormatWith(!initial));
     }
 
+    #endregion
 
     [Test]
-    public void OriginShouldBeNonEmptyForTestRepository()
+    public void ConfigShouldBeNonEmptyForTestRepository()
     {
       Repository repo = Repository.Open(Global.TestRepositoryPath);
+
+      Assert.IsNotNull(repo.Config, "Test repository configuration cannot be null or empty");
+      
+    }
+
+    [Test]
+    public void ConfigShouldReturnOriginForTestRepository()
+    {
+      Repository repo = Repository.Open(Global.TestRepositoryPath);
+
       Assert.IsNotNull(repo.Config.Remotes["origin"], "Test repository origin cannot be null or empty");
       Assert.IsFalse(String.IsNullOrEmpty(repo.Config.Remotes["origin"].Url), "Test repository origin url cannot be null or empty");
-      
+
     }
 
     [Test]
@@ -118,6 +171,7 @@ namespace Test
     [Test]
     public void TestRepositoryShouldReturnCorrectValues()
     {
+ 
       Repository repo = Repository.Open(Global.TestRepositoryPath);
 
       Assert.IsTrue(repo.Config.Core.IgnoreCase, "IgnoreCase should be true for test repository");
