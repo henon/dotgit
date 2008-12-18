@@ -80,6 +80,14 @@ namespace Test
       
     }
 
+    [Test]
+    [ExpectedException(typeof(KeyNotFoundException), UserMessage="The Remotes collection should throw IndexOutOfRangeException for unknown remotes")]
+    public void RemotesShouldThrowExceptionOnUnknownKey()
+    {
+      Repository repo = Repository.Open(Global.TestRepositoryPath);
+      Console.WriteLine(repo.Config.Remotes["asdasasdsadadadsdasdasd"]);
+    }
+
 
     [Test]
     public void OriginShouldBeTestRepositoryAtGitHub()
@@ -140,7 +148,7 @@ namespace Test
       Repository repo = Repository.Open(Global.TestRepositoryPath);
 
       dotGit.Config.Remote newRemote = new dotGit.Config.Remote("MyFirstRemote", "git@somehost.com:repo.git");
-      repo.Config.Remotes.Add(newRemote);
+      repo.Config.Remotes.Add("MyFirstRemote", newRemote);
       repo.Config.Save();
       repo.Config.Reload();
 

@@ -52,7 +52,7 @@ namespace dotGit.Config
             break;
           default:
             if (key.StartsWith("remote"))
-              _remotes.Add(new Remote(key, data[key]));
+              _remotes.Add(key, new Remote(key, data[key]));
 
             if (key.StartsWith("branch"))
               _branches.Add(new Branch(key, data[key]));
