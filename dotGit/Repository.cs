@@ -56,8 +56,6 @@ namespace dotGit
 			}
 			else
 				throw new RepositoryNotFoundException("'{0}' could not be opened as a git repository".FormatWith(path));
-
-      _configuration = new Configuration(this);
 		}
 
 		/// <summary>
@@ -276,7 +274,9 @@ namespace dotGit
     {
       get
       {
-        // TODO : On Demand loading doesn't work (setting properties not possible)
+        if (_configuration == null)
+          _configuration = Configuration.Load(Path.Combine(GitDir.FullName, "config"));
+
         // Maybe a FileWatcher to detect changes in config ?
         return _configuration;
       }

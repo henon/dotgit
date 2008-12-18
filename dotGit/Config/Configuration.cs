@@ -26,12 +26,25 @@ namespace dotGit.Config
 
     #region Constructors
 
-    internal Configuration(Repository repository)
+    private Configuration(string path, bool load)
     {
-      Repo = repository;
+      Path = path;
 
-      ReadConfiguration();
-      ParseData();
+      if (load)
+      {
+        ReadConfiguration();
+        ParseData();
+      }
+    }
+
+    public static Configuration Load(string path)
+    {
+      return new Configuration(path, true);
+    }
+
+    public static Configuration Create(string newConfigPath)
+    {
+      return new Configuration(newConfigPath, false);
     }
 
     #endregion
@@ -90,7 +103,7 @@ namespace dotGit.Config
 
     private void ReadConfiguration()
     {
-      string config = File.ReadAllText(Path.Combine(Repo.GitDir.FullName, "config"));
+      string config = File.ReadAllText(Path);
 
 
 
@@ -168,10 +181,10 @@ namespace dotGit.Config
       get { return _branches; }
     }
 
-    private Repository Repo
+    public string Path
     {
       get;
-      set;
+      private set;
     }
     #endregion
 
