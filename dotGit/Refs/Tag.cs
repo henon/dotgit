@@ -110,6 +110,8 @@ namespace dotGit.Refs
       {
         input.Rewind();
 
+        input.ReadToNull();
+
         // Skip object keyword
         input.ReadWord();
 
