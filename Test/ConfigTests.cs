@@ -53,23 +53,20 @@ namespace Test
     }
 
     [Test]
-    [ExpectedException(ExceptionType=typeof(IOException), UserMessage="Cannot recreate config file which already exists")]
+    [ExpectedException(typeof(ArgumentException), UserMessage = "Cannot recreate config file which already exists")]
     public void InitializeConfigWhichAlreadyExistsShouldThrowException()
     {
-      if (File.Exists(newConfigFilePath))
-        File.Delete(newConfigFilePath);
-
-      Configuration config2 = Configuration.Create(newConfigFilePath);
-      Configuration config3 = Configuration.Create(newConfigFilePath);
-       
-      
+      Configuration config2 = Configuration.Create(path);
     }
 
     [Test]
     public void InitializeConfigWithPathParameterShouldReturnNewFile()
     {
-      Configuration config2 = Configuration.Create(newConfigFilePath);
+      if (File.Exists(newConfigFilePath))
+        File.Delete(newConfigFilePath);
 
+      Configuration config2 = Configuration.Create(newConfigFilePath);
+      config2.Save();
       Assert.IsTrue(File.Exists(newConfigFilePath), "New configuration file was not created on filesystem");
       Assert.IsFalse(String.IsNullOrEmpty(File.ReadAllText(newConfigFilePath)), "New configuration file cannot be empty. Core section should exist");
       
@@ -99,63 +96,63 @@ namespace Test
     [Test]
     public void ConfigUserNameShouldBeTest()
     {
-      Repository repo = Repository.Open(Global.TestRepositoryPath);
-      Assert.IsTrue(String.Equals(repo.Config.User.Name, "Test"), "Username configuration in repository should be 'Test'");
+      Assert.IsTrue(String.Equals(config.User.Name, "Test"), "Username configuration in repository should be 'Test'");
     }
 
     [Test]
     public void ConfigUserEmailShouldBeTestEmail()
     {
-      Repository repo = Repository.Open(Global.TestRepositoryPath);
-      Assert.IsTrue(String.Equals(repo.Config.User.Email, "dotGitTest@test.com"), "User email should be test@test.com");
+      Assert.IsTrue(String.Equals(config.User.Email, "dotGitTest@test.com"), "User email should be test@test.com");
     }
 
     [Test]
     public void ConfigUserEmailShouldBeSettable()
     {
-      Repository repo = Repository.Open(Global.TestRepositoryPath);
-      string first = repo.Config.User.Email;
+      string first = config.User.Email;
       string newEmail = "newemail@somehost.com";
-      repo.Config.User.Email = newEmail;
+      config.User.Email = newEmail;
 
-      Assert.IsTrue(String.Equals(repo.Config.User.Email, newEmail), "User email should be {0} after setting it".FormatWith(newEmail));
+      Assert.IsTrue(String.Equals(config.User.Email, newEmail), "User email should be {0} after setting it".FormatWith(newEmail));
     }
 
     [Test]
     public void ConfigUserNameShouldBeSettable()
     {
-      Repository repo = Repository.Open(Global.TestRepositoryPath);
-      string first = repo.Config.User.Name;
-      string newName = "MyFirstName MyLastName";
-      repo.Config.User.Name = newName;
+      Configuration config2 = Configuration.Load(path);
 
-      Assert.IsTrue(String.Equals(repo.Config.User.Name, newName), "User name should be {0} after setting it".FormatWith(newName));
+      string first = config2.User.Name;
+      string newName = "MyFirstName MyLastName";
+      config2.User.Name = newName;
+
+      Assert.IsTrue(String.Equals(config2.User.Name, newName), "User name should be {0} after setting it".FormatWith(newName));
     }
 
     [Test]
     public void ConfigIgnoreCaseShouldBeSettable()
     {
-      Repository repo = Repository.Open(Global.TestRepositoryPath);
-      bool initial = repo.Config.Core.IgnoreCase;
-      repo.Config.Core.IgnoreCase = !initial;
+      Configuration config2 = Configuration.Load(path);
 
-      Assert.IsTrue(repo.Config.Core.IgnoreCase != initial, "IgnoreCase should be {0} after setting it".FormatWith(!initial));
+      bool initial = config2.Core.IgnoreCase;
+      config2.Core.IgnoreCase = !initial;
+
+      Assert.IsTrue(config2.Core.IgnoreCase != initial, "IgnoreCase should be {0} after setting it".FormatWith(!initial));
     }
 
     [Test]
     public void ConfigSymLinksShouldBeSettable()
     {
-      
-      bool initial = config.Core.SymLinks;
-      config.Core.SymLinks = !initial;
+      Configuration config2 = Configuration.Load(path);
+      bool initial = config2.Core.SymLinks;
+      config2.Core.SymLinks = !initial;
 
-      Assert.IsTrue(config.Core.SymLinks != initial, "SymLinks should be {0} after setting it".FormatWith(!initial));
+      Assert.IsTrue(config2.Core.SymLinks != initial, "SymLinks should be {0} after setting it".FormatWith(!initial));
     }
 
     [Test]
     public void OriginShouldBeTestRepositoryAtGitHub()
     {
-      Assert.IsTrue(String.Equals(config.Remotes["origin"].Url, "git@github.com:pheew/dotgittestrepo.git"), "Repository is not 'origin'ated at github test repository");
+      // We love GitHub ;)
+      Assert.IsTrue(String.Equals(config.Remotes["origin"].Url, "git@github.com:pheew/dotgit.git"), "Repository is not 'origin'ated at github");
     }
 
     #endregion
@@ -168,17 +165,13 @@ namespace Test
       Repository repo = Repository.Open(Global.TestRepositoryPath);
 
       Assert.IsNotNull(repo.Config, "Test repository configuration cannot be null or empty");
-      
     }
 
     [Test]
-    public void ConfigShouldReturnOriginForTestRepository()
+    public void ConfigShouldReturnOriginRemote()
     {
-      Repository repo = Repository.Open(Global.TestRepositoryPath);
-
-      Assert.IsNotNull(repo.Config.Remotes["origin"], "Test repository origin cannot be null or empty");
-      Assert.IsFalse(String.IsNullOrEmpty(repo.Config.Remotes["origin"].Url), "Test repository origin url cannot be null or empty");
-
+      Assert.IsNotNull(config.Remotes["origin"], "Test repository origin cannot be null or empty");
+      Assert.IsFalse(String.IsNullOrEmpty(config.Remotes["origin"].Url), "Test repository origin url cannot be null or empty");
     }
 
     [Test]

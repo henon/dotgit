@@ -44,6 +44,9 @@ namespace dotGit.Config
 
     public static Configuration Create(string newConfigPath)
     {
+      if (File.Exists(newConfigPath))
+        throw new ArgumentException("Config file already exists at {0}".FormatWith(newConfigPath), "newConfigPath");
+
       return new Configuration(newConfigPath, false);
     }
 
@@ -65,8 +68,10 @@ namespace dotGit.Config
             break;
           default:
             if (key.StartsWith("remote"))
-              _remotes.Add(key, new Remote(key, data[key]));
-
+            {
+              Remote rem = new Remote(key, data[key]);
+              _remotes.Add(rem.Name, rem);
+            }
             if (key.StartsWith("branch"))
               _branches.Add(new Branch(key, data[key]));
 
