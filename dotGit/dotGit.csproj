@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="Config\Branch.cs" />
     <Compile Include="Config\Branches.cs" />
+    <Compile Include="Config\ConfigItem.cs" />
     <Compile Include="Config\ConfigSection.cs" />
     <Compile Include="Config\Configuration.cs" />
     <Compile Include="Config\Core.cs" />
@@ -78,7 +79,7 @@
     <Compile Include="Objects\Storage\PackObjects\OFSDelta.cs" />
     <Compile Include="Objects\Storage\PackIndexV2.cs" />
     <Compile Include="Objects\Storage\PackV2.cs" />
-    <Compile Include="Objects\Storage\PackV2Pack.cs" />
+    <Compile Include="Objects\Storage\PackFileV2.cs" />
     <Compile Include="Objects\TreeNodeCollection.cs" />
     <Compile Include="Objects\Storage\PackObjects\REFDelta.cs" />
     <Compile Include="Objects\Storage\IStorableObject.cs" />

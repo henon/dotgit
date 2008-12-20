@@ -11,11 +11,11 @@ using System.Diagnostics;
 
 namespace dotGit.Objects.Storage
 {
-  public class PackV2Pack : Pack
+  public class PackFileV2 : Pack
   {
     private static readonly string HEADER = "PACK";
 
-    internal PackV2Pack(Repository repo, string path)
+    internal PackFileV2(Repository repo, string path)
       : base(repo, path)
     {
       VerifyPack();

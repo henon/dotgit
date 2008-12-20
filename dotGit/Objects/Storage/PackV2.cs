@@ -17,7 +17,7 @@ namespace dotGit.Objects.Storage
       : base(repo, path)
     {
       Index = new PackIndexV2(IndexFilePath);
-      Pack = new PackV2Pack(Repo, PackFilePath);
+      Pack = new PackFileV2(Repo, PackFilePath);
     }
 
     public override int Version
@@ -41,7 +41,7 @@ namespace dotGit.Objects.Storage
       set;
     }
 
-    private PackV2Pack Pack
+    private PackFileV2 Pack
     {
       get;
       set;
