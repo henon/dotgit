@@ -32,7 +32,7 @@ namespace dotGit.Objects.Storage
       throw new NotImplementedException();
     }
 
-    public PackObject GetObjectWithOffset(GitPackReader reader)
+    public PackObject GetObjectWithOffset(GitObjectReader reader)
     {
       Debug.WriteLine("Fetching object with offset: {0}".FormatWith(reader.Position));
 
@@ -70,7 +70,7 @@ namespace dotGit.Objects.Storage
 
     private void VerifyPack()
     {
-      using (GitPackReader reader = new GitPackReader(File.OpenRead(Path)))
+      using (GitObjectReader reader = new GitObjectReader(File.OpenRead(Path)))
       {
         string header;
         int version, numberOfObjects;

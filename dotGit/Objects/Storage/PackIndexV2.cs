@@ -66,7 +66,7 @@ namespace dotGit.Objects.Storage
       string magicNumber;
       int version;
 
-      using (GitPackReader reader = new GitPackReader(File.OpenRead(Path)))
+      using (GitObjectReader reader = new GitObjectReader(File.OpenRead(Path)))
       {
         magicNumber = reader.ReadBytes(4).GetString();
         version = reader.ReadBytes(4).Sum(b => b);

@@ -23,7 +23,7 @@ namespace dotGit.Refs
     internal static Tag Load(Repository repo, string sha, string path)
     {
       if (!Utility.IsValidSHA(sha))
-        throw new ParseException("Tag does not contain valid sha");
+        throw new ArgumentException("Tag does not contain valid sha", "sha");
 
       IStorableObject obj = repo.Storage.GetObject(sha);
 
@@ -111,6 +111,8 @@ namespace dotGit.Refs
         input.Rewind();
 
         input.ReadToNull();
+        if (input.IsEndOfStream)
+          input.Rewind();
 
         // Skip object keyword
         input.ReadWord();
