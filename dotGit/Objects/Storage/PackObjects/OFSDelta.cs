@@ -8,7 +8,7 @@ namespace dotGit.Objects.Storage.PackObjects
 {
   internal class OFSDelta : Deltified
   {
-    internal OFSDelta(long size, ObjectType type, GitPackReader reader)
+    internal OFSDelta(long size, ObjectType type, GitObjectReader reader)
       : base(size, type, reader)
     { }
 
@@ -24,7 +24,7 @@ namespace dotGit.Objects.Storage.PackObjects
       private set;
     }
 
-    public override void Load(GitPackReader reader)
+    public override void Load(GitObjectReader reader)
     {
 
       byte buffer = reader.ReadByte();

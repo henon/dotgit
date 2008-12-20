@@ -6,6 +6,7 @@ using System.Security.Cryptography;
 using System.IO;
 using dotGit.Generic;
 using dotGit.Exceptions;
+using dotGit.Objects.Storage;
 
 namespace dotGit.Objects
 {

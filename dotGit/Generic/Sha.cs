@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Security.Cryptography;
 using dotGit.Objects;
+using dotGit.Objects.Storage;
 
 namespace dotGit.Generic
 {

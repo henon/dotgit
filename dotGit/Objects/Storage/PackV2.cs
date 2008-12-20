@@ -57,7 +57,7 @@ namespace dotGit.Objects.Storage
         {
           long packFileOffset = Index.GetPackFileOffset(new Sha(sha));
 
-          using (GitPackReader reader = new GitPackReader(File.OpenRead(PackFilePath)))
+          using (GitObjectReader reader = new GitObjectReader(File.OpenRead(PackFilePath)))
           {
             reader.Position = packFileOffset;
             PackObject obj = Pack.GetObjectWithOffset(reader);

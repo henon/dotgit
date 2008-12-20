@@ -6,6 +6,7 @@ using dotGit.Generic;
 using System.IO;
 using dotGit.Exceptions;
 using dotGit.Objects;
+using dotGit.Objects.Storage;
 
 namespace dotGit.Index
 {

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using zlib;
+using dotGit.Objects.Storage;
 
 
 
@@ -62,7 +63,7 @@ namespace dotGit.Objects
       }
     }
 
-    public static MemoryStream Decompress(BinaryReader input, long destLength)
+    public static MemoryStream Decompress(GitObjectReader input, long destLength)
     {
       int bufferLength = 4;
 
