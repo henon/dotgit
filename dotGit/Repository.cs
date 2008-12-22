@@ -275,7 +275,9 @@ namespace dotGit
       get
       {
         if (_configuration == null)
+        {
           _configuration = Configuration.Load(Path.Combine(GitDir.FullName, "config"));
+        }
 
         // Maybe a FileWatcher to detect changes in config ?
         return _configuration;

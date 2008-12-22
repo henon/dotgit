@@ -12,8 +12,8 @@ using dotGit.Config;
 
 namespace Test
 {
-	[TestFixture]	
-	public class ConfigTests
+  [TestFixture]
+  public class ConfigTests
   {
 
     dotGit.Config.Configuration config;
@@ -48,15 +48,7 @@ namespace Test
       Configuration config2 = Configuration.Create(newConfigFilePath);
 
       Assert.IsNotNull(config, "configuration cannot be null after calling constructor");
-      Assert.IsNotNull(config.Core, "Config.Core cannot be null after reading/creating configuration");
-      Assert.IsNotNull(config.User, "Config.User cannot be null after reading/creating configuration");
-    }
-
-    [Test]
-    [ExpectedException(typeof(ArgumentException), UserMessage = "Cannot recreate config file which already exists")]
-    public void InitializeConfigWhichAlreadyExistsShouldThrowException()
-    {
-      Configuration config2 = Configuration.Create(path);
+      Assert.IsNotNull(config.GetValue<int>(ConfigSections.Core, "repositoryformatversion"), "Config core.repositoryformatversion cannot be null after reading/creating configuration");
     }
 
     [Test]
@@ -69,8 +61,17 @@ namespace Test
       config2.Save();
       Assert.IsTrue(File.Exists(newConfigFilePath), "New configuration file was not created on filesystem");
       Assert.IsFalse(String.IsNullOrEmpty(File.ReadAllText(newConfigFilePath)), "New configuration file cannot be empty. Core section should exist");
-      
+
     }
+
+    [Test]
+    [ExpectedException(typeof(ArgumentException), UserMessage = "Cannot recreate config file which already exists")]
+    public void InitializeConfigWhichAlreadyExistsShouldThrowException()
+    {
+      Configuration config2 = Configuration.Create(path);
+    }
+
+
 
     [Test]
     public void ReadConfiguration()
@@ -83,9 +84,14 @@ namespace Test
     {
       Configuration config2 = Configuration.Load(path);
 
-      config.Core.IgnoreCase = !config.Core.IgnoreCase;
+      config.SetValue(ConfigSections.Core, ConfigKeys.IgnoreCase, !config.GetValue<bool>(ConfigSections.Core, ConfigKeys.IgnoreCase));
+
       config.Reload();
-      Assert.IsTrue(config.Core.IgnoreCase == config2.Core.IgnoreCase, "After reloading values should reflect old (file) values");
+      Assert.IsTrue(
+        config.GetValue<bool>(ConfigSections.Core, ConfigKeys.IgnoreCase)
+        ==
+        config2.GetValue<bool>(ConfigSections.Core, ConfigKeys.IgnoreCase)
+        , "After reloading values should reflect old (file) values");
 
     }
 
@@ -96,35 +102,35 @@ namespace Test
     [Test]
     public void ConfigUserNameShouldBeTest()
     {
-      Assert.IsTrue(String.Equals(config.User.Name, "Test"), "Username configuration in repository should be 'Test'");
+      Assert.IsTrue(String.Equals(config.GetValue<string>(ConfigSections.User, ConfigKeys.Name), "Test"), "Username configuration in repository should be 'Test'");
     }
 
     [Test]
     public void ConfigUserEmailShouldBeTestEmail()
     {
-      Assert.IsTrue(String.Equals(config.User.Email, "dotGitTest@test.com"), "User email should be test@test.com");
+      Assert.IsTrue(String.Equals(config.GetValue<string>(ConfigSections.User, ConfigKeys.Email), "dotGitTest@test.com"), "User email should be test@test.com");
     }
 
     [Test]
     public void ConfigUserEmailShouldBeSettable()
     {
-      string first = config.User.Email;
-      string newEmail = "newemail@somehost.com";
-      config.User.Email = newEmail;
 
-      Assert.IsTrue(String.Equals(config.User.Email, newEmail), "User email should be {0} after setting it".FormatWith(newEmail));
+      string initial = config.GetValue<string>(ConfigSections.User, ConfigKeys.Email);
+      string newEmail = "newemail@somehost.com";
+      config.SetValue(ConfigSections.User, ConfigKeys.Email, newEmail);
+
+      Assert.IsTrue(String.Equals(config.GetValue<string>(ConfigSections.User, ConfigKeys.Email), newEmail), "User email should be {0} after setting it".FormatWith(newEmail));
+
     }
 
     [Test]
     public void ConfigUserNameShouldBeSettable()
     {
-      Configuration config2 = Configuration.Load(path);
+      string initial = config.GetValue<string>(ConfigSections.User, ConfigKeys.Name);
+      string newName = "MyFirst MyLast";
+      config.SetValue(ConfigSections.User, ConfigKeys.Name, newName);
 
-      string first = config2.User.Name;
-      string newName = "MyFirstName MyLastName";
-      config2.User.Name = newName;
-
-      Assert.IsTrue(String.Equals(config2.User.Name, newName), "User name should be {0} after setting it".FormatWith(newName));
+      Assert.IsTrue(String.Equals(config.GetValue<string>(ConfigSections.User, ConfigKeys.Name), newName), "User name should be {0} after setting it".FormatWith(newName));
     }
 
     [Test]
@@ -132,27 +138,30 @@ namespace Test
     {
       Configuration config2 = Configuration.Load(path);
 
-      bool initial = config2.Core.IgnoreCase;
-      config2.Core.IgnoreCase = !initial;
+      bool initial = config2.GetValue<bool>(ConfigSections.Core, ConfigKeys.IgnoreCase);
+      config2.SetValue(ConfigSections.Core, ConfigKeys.IgnoreCase, !initial);
 
-      Assert.IsTrue(config2.Core.IgnoreCase != initial, "IgnoreCase should be {0} after setting it".FormatWith(!initial));
+      Assert.IsTrue(config2.GetValue<bool>(ConfigSections.Core, ConfigKeys.IgnoreCase) != initial, "IgnoreCase should be {0} after setting it".FormatWith(!initial));
     }
 
     [Test]
     public void ConfigSymLinksShouldBeSettable()
     {
       Configuration config2 = Configuration.Load(path);
-      bool initial = config2.Core.SymLinks;
-      config2.Core.SymLinks = !initial;
+      bool initial = config2.GetValue<bool>(ConfigSections.Core, ConfigKeys.SymLinks);
+      config2.SetValue(ConfigSections.Core, ConfigKeys.SymLinks, !initial);
 
-      Assert.IsTrue(config2.Core.SymLinks != initial, "SymLinks should be {0} after setting it".FormatWith(!initial));
+      Assert.IsTrue(config2.GetValue<bool>(ConfigSections.Core, ConfigKeys.SymLinks) != initial, "SymLinks should be {0} after setting it".FormatWith(!initial));
     }
 
     [Test]
     public void OriginShouldBeTestRepositoryAtGitHub()
     {
       // We love GitHub ;)
-      Assert.IsTrue(String.Equals(config.Remotes["origin"].Url, "git@github.com:pheew/dotgit.git"), "Repository is not 'origin'ated at github");
+
+      Assert.IsTrue(String.Equals(
+        config.GetValue<string>(ConfigSections.Remote, "origin", ConfigKeys.Url)
+        , "git@github.com:pheew/dotgit.git"), "Repository is not 'origin'ated at github");
     }
 
     #endregion
@@ -170,63 +179,54 @@ namespace Test
     [Test]
     public void ConfigShouldReturnOriginRemote()
     {
-      Assert.IsNotNull(config.Remotes["origin"], "Test repository origin cannot be null or empty");
-      Assert.IsFalse(String.IsNullOrEmpty(config.Remotes["origin"].Url), "Test repository origin url cannot be null or empty");
-    }
-
-    [Test]
-    [ExpectedException(typeof(KeyNotFoundException), UserMessage="The Remotes collection should throw IndexOutOfRangeException for unknown remotes")]
-    public void RemotesShouldThrowExceptionOnUnknownKey()
-    {
-      Repository repo = Repository.Open(Global.TestRepositoryPath);
-      Console.WriteLine(repo.Config.Remotes[Guid.NewGuid().ToString()]);
+      Assert.IsFalse(String.IsNullOrEmpty(config.GetValue<string>(ConfigSections.Remote, "origin", ConfigKeys.Url)), "Test repository origin url cannot be null or empty");
     }
 
     [Test]
     public void CoreSectionShouldContainStandardEntries()
     {
-      
-      Assert.IsNotNull( config.Core.Bare, "Config.Bare cannot be null");
-      Assert.IsNotNull( config.Core.SymLinks, "Config.SymLinks cannot be null");
-      Assert.IsNotNull( config.Core.FileMode, "Config.FileMode cannot be null");
-      Assert.IsNotNull(config.Core.IgnoreCase, "Config.IgnoreCase cannot be null");
-      Assert.IsNotNull(config.Core.RepositoryFormatVersion, "Config.RepositoryFormatVersion cannot be null");
+      Assert.IsNotNull(config.GetValue<bool>(ConfigSections.Core, ConfigKeys.Bare), "Config.Bare cannot be null");
+      Assert.IsNotNull(config.GetValue<bool>(ConfigSections.Core, ConfigKeys.SymLinks), "Config.SymLinks cannot be null");
+      Assert.IsNotNull(config.GetValue<bool>(ConfigSections.Core, ConfigKeys.FileMode), "Config.FileMode cannot be null");
+      Assert.IsNotNull(config.GetValue<bool>(ConfigSections.Core, ConfigKeys.IgnoreCase), "Config.IgnoreCase cannot be null");
+      Assert.IsNotNull(config.GetValue<int>(ConfigSections.Core, ConfigKeys.RepositoryFormatVersion), "Config.RepositoryFormatVersion cannot be null");
 
-      Assert.IsInstanceOfType(typeof(bool), config.Core.Bare, "Config.Bare is not of type boolean");
-      Assert.IsInstanceOfType(typeof(bool), config.Core.SymLinks, "Config.SymLinks is not of type boolean");
-      Assert.IsInstanceOfType(typeof(bool), config.Core.FileMode, "Config.FileMode is not of type boolean");
-      Assert.IsInstanceOfType(typeof(bool), config.Core.IgnoreCase, "Config.IgnoreCase is not of type boolean");
-      Assert.IsInstanceOfType(typeof(string), config.Core.RepositoryFormatVersion, "Config.RepositoryFormatVersion is not of type string");
-      Assert.IsInstanceOfType(typeof(bool), config.Core.LogAllRefUpdates, "Config.LogAllRefUpdates is not of type boolean");
+      //Assert.IsInstanceOfType(typeof(bool), config.Core.Bare, "Config.Bare is not of type boolean");
+      //Assert.IsInstanceOfType(typeof(bool), config.Core.SymLinks, "Config.SymLinks is not of type boolean");
+      //Assert.IsInstanceOfType(typeof(bool), config.Core.FileMode, "Config.FileMode is not of type boolean");
+      //Assert.IsInstanceOfType(typeof(bool), config.Core.IgnoreCase, "Config.IgnoreCase is not of type boolean");
+      //Assert.IsInstanceOfType(typeof(string), config.Core.RepositoryFormatVersion, "Config.RepositoryFormatVersion is not of type string");
+      //Assert.IsInstanceOfType(typeof(bool), config.Core.LogAllRefUpdates, "Config.LogAllRefUpdates is not of type boolean");
 
     }
 
     [Test]
     public void TestRepositoryShouldReturnCorrectValues()
     {
- 
+
       Repository repo = Repository.Open(Global.TestRepositoryPath);
 
-      Assert.IsTrue(repo.Config.Core.IgnoreCase, "IgnoreCase should be true for test repository");
-      Assert.IsFalse(repo.Config.Core.FileMode, "FileMode should be false for test repository");
+      Assert.IsTrue(repo.Config.GetValue<bool>(ConfigSections.Core, ConfigKeys.IgnoreCase), "IgnoreCase should be true for test repository");
+      Assert.IsFalse(repo.Config.GetValue<bool>(ConfigSections.Core, ConfigKeys.FileMode), "FileMode should be false for test repository");
 
-      Assert.IsTrue(repo.Config.Remotes.Count > 0, "Test respository should contain at least one remote");
+      Assert.IsTrue(repo.Config.GetValue<string>(ConfigSections.Remote, "origin", ConfigKeys.Url).Contains("github"), "Test repository origin should be from github");
     }
 
     #endregion
 
+
     [Test]
     public void SavingUserEmailChangeShouldPersistSettings()
     {
-     
+
       Repository repo = Repository.Open(Global.TestRepositoryPath);
-      string first = repo.Config.User.Email;
+      string first = repo.Config.GetValue<string>(ConfigSections.User, ConfigKeys.Email);
       string newEmail = "newemail@somehost.com";
-      repo.Config.User.Email = newEmail;
+      repo.Config.SetValue(ConfigSections.User, ConfigKeys.Email, newEmail);
       repo.Config.Save();
       repo.Config.Reload();
 
-      Assert.IsTrue(String.Equals(repo.Config.User.Email, newEmail), "User email should be {0} after setting and saving it".FormatWith(newEmail));
+      Assert.IsTrue(String.Equals(repo.Config.GetValue<string>(ConfigSections.User, ConfigKeys.Email), newEmail), "User email should be {0} after setting and saving it".FormatWith(newEmail));
 
     }
 
@@ -236,23 +236,19 @@ namespace Test
 
       Repository repo = Repository.Open(Global.TestRepositoryPath);
 
-      dotGit.Config.Remote newRemote = new dotGit.Config.Remote("MyFirstRemote", "git@somehost.com:repo.git");
-      repo.Config.Remotes.Add("MyFirstRemote", newRemote);
+      string remoteName = "MyFirstRemote";
+      string url = "git@somehost.com:repo.git";
+      repo.Config.SetValue(ConfigSections.Remote, remoteName, ConfigKeys.Url, url);
       repo.Config.Save();
+
       repo.Config.Reload();
 
-      dotGit.Config.Remote afterSave = repo.Config.Remotes["MyFirstRemote"];
+      string newUrl = repo.Config.GetValue<string>(ConfigSections.Remote, remoteName, ConfigKeys.Url);
 
-      Assert.IsNotNull(afterSave, "Remote should persist after saving configuration");
-      Assert.IsTrue(afterSave.Name == newRemote.Name, "New remote name is not persisted");
-      Assert.IsTrue(afterSave.Url== newRemote.Url, "New remote url is not persisted");
+      Assert.IsNotNull(url, "Remote should persist after saving configuration");
+      Assert.IsTrue(newUrl == url, "New remote url is not persisted");
 
     }
 
-    [Test]
-    public void SavingConfigurationShouldNotMessUpUnknownConfigValues()
-    {
-      Assert.IsTrue(false, "To be determined");
-    }
-	}
+  }
 }
