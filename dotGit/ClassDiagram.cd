@@ -32,28 +32,28 @@
   <Class Name="dotGit.Objects.Commit" Collapsed="true">
     <Position X="5" Y="5.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAgAACCAEAAAgAACwAEQACBAAAAAAAAAIAAACAA=</HashCode>
+      <HashCode>AAAAQAgAACCACAAAgAAAgAEAACBAAAAAAAAAIAAoCAI=</HashCode>
       <FileName>Objects\Commit.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="dotGit.Refs.Ref" Collapsed="true">
     <Position X="3.75" Y="2.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAACAAIAAAAAAAQBAAAEAAAAAAAAAACAEAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAIAAACAAAQBAABAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Refs\Ref.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="dotGit.Refs.Branch" Collapsed="true">
-    <Position X="3" Y="4" Width="1.5" />
+    <Position X="2.75" Y="3.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAEAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAQ=</HashCode>
       <FileName>Refs\Branch.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="dotGit.Refs.Tag" Collapsed="true">
     <Position X="5" Y="4" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>IAAAAAACABAAAAAgAACAACAAACBAAAAAAAAAIAAAAAA=</HashCode>
+      <HashCode>AAAAgAACABAAAAAgAAAAACACACBAAAAAAAAAIAAAAAA=</HashCode>
       <FileName>Refs\Tag.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -68,9 +68,12 @@
   <Class Name="dotGit.Repository" Collapsed="true">
     <Position X="3.75" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AIAAAAACCIAAKAAAAAggAAAIAACAAEAAAAECAAABgoA=</HashCode>
+      <HashCode>AIQAAAACCoAAKAAAAAggAAAAAACAAEAAAAECAAABgpA=</HashCode>
       <FileName>Repository.cs</FileName>
     </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Config" />
+    </ShowAsAssociation>
   </Class>
   <Class Name="dotGit.Contributer" Collapsed="true">
     <Position X="7.25" Y="4.75" Width="1.5" />
@@ -84,6 +87,13 @@
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Objects\TreeNodeCollection.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="dotGit.Config.Configuration" Collapsed="true">
+    <Position X="7.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAgJAQIAAAAgoAAAAABADEAAAAAFAACAAAAAAACAQ=</HashCode>
+      <FileName>Config\Configuration.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Interface Name="dotGit.Objects.Storage.IStorableObject">
