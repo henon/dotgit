@@ -1,3 +1,0 @@
-[submodule "Test/Resources/TestRepo"]
-	path = Test/Resources/TestRepo
-	url = git://github.com/pheew/dotgittestrepo.git
