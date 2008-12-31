@@ -31,8 +31,8 @@ namespace dotGit.Index
 				if (!VERSIONS.Contains(Version))
 					throw new ParseException("Unknown version number {0}. Needs to be one of: {1}".FormatWith(Version, String.Join(",", VERSIONS.Select(i => i.ToString()).ToArray())));
 
-				NumberOfEntries = stream.ReadBytes(4).Sum(b => (int)b);
 
+        NumberOfEntries = System.Net.IPAddress.HostToNetworkOrder(stream.ReadBytes(4).ToInt());
 
 				Entries = new IndexEntryCollection(NumberOfEntries);
 

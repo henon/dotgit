@@ -14,20 +14,18 @@ namespace dotGit.Index
 		internal IndexEntry(GitObjectReader source)
 		{
 
-			// TODO: really parse all the var stuff
 			Created = new IndexTime(source);
 			Modified = new IndexTime(source);
 
-			//var time = source.ReadBytes(16);
+      // TODO: really parse all the var stuff
+      var dev = System.Net.IPAddress.HostToNetworkOrder(source.ReadBytes(4).ToInt());
+			var ino = System.Net.IPAddress.HostToNetworkOrder(source.ReadBytes(4).ToInt());
+			var mode = System.Net.IPAddress.HostToNetworkOrder(source.ReadBytes(4).ToInt());
+			var uid = System.Net.IPAddress.HostToNetworkOrder(source.ReadBytes(4).ToInt());
+      var gid = System.Net.IPAddress.HostToNetworkOrder(source.ReadBytes(4).ToInt());
 
-			var dev = source.ReadBytes(4);
-			var ino = source.ReadBytes(4);
-			var mode = source.ReadBytes(4);
-			var uid = source.ReadBytes(4);
-			var gid = source.ReadBytes(4);
-			Size = source.ReadBytes(4).ToLong();
+      Size = System.Net.IPAddress.HostToNetworkOrder(source.ReadBytes(4).ToInt());
 			SHA = source.ReadBytes(20).ToSHAString();
-
 
 			var flags = source.ReadBytes(2);
 			var assumeValid = flags[0].GetBits(0, 1);
@@ -71,7 +69,7 @@ namespace dotGit.Index
 			private set;
 		}
 
-		public long Size
+		public int Size
 		{
 			get;
 			private set;
