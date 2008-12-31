@@ -12,3 +12,4 @@ Bugs / Features
 ===============
 
 If you find any bugs or would like to see a feature implemented please report it at the [Lighthouse project](http://pheew.lighthouseapp.com/projects/21305/home)
+
