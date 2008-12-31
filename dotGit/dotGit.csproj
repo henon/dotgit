@@ -31,6 +31,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.85.5.452, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Lib\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core">
@@ -54,14 +58,14 @@
     <Compile Include="Exceptions\ShaMismatchException.cs" />
     <Compile Include="Generic\Extensions.cs" />
     <Compile Include="Generic\HexEncoding.cs" />
-    <Compile Include="Objects\Storage\GitObjectReader.cs" />
-    <Compile Include="Generic\InternalWritableList.cs" />
-    <Compile Include="Generic\Sha.cs" />
-    <Compile Include="Generic\Zlib.cs" />
     <Compile Include="Index\Index.cs" />
     <Compile Include="Index\IndexEntry.cs" />
     <Compile Include="Index\IndexEntryCollection.cs" />
     <Compile Include="Index\IndexTime.cs" />
+    <Compile Include="Objects\Storage\GitObjectReader.cs" />
+    <Compile Include="Generic\InternalWritableList.cs" />
+    <Compile Include="Generic\Sha.cs" />
+    <Compile Include="Generic\Zlib.cs" />
     <Compile Include="Objects\Blob.cs" />
     <Compile Include="Objects\Commit.cs" />
     <Compile Include="Objects\CommitCollection.cs" />

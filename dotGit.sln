@@ -6,6 +6,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotGit", "dotGit\dotGit.csp
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Lib", "Lib", "{EB259CFB-73EF-4024-B455-962325D6F37A}"
 	ProjectSection(SolutionItems) = preProject
+		Lib\ICSharpCode.SharpZipLib.dll = Lib\ICSharpCode.SharpZipLib.dll
 		Lib\zlib.net.dll = Lib\zlib.net.dll
 	EndProjectSection
 EndProject
