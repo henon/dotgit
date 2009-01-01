@@ -33,13 +33,13 @@ namespace dotGit.Index
 			Stage = (IndexStage)flags[0].GetBits(2, 2);
 			
 			Path = source.ReadToNull().GetString();
-
-			
 			
 			string rest = source.ReadToNextNonNull().GetString();
-		}
+    }
 
-		public string Path
+    #region Properties
+
+    public string Path
 		{
 			get;
 			private set;
@@ -73,8 +73,11 @@ namespace dotGit.Index
 		{
 			get;
 			private set;
-		}
-	}
+    }
+
+
+    #endregion
+  }
 
 	public enum IndexStage
 	{

@@ -7,18 +7,38 @@ using dotGit.Exceptions;
 using dotGit.Generic;
 using dotGit.Objects.Storage.PackObjects;
 using System.Diagnostics;
+using Winterdom.IO.FileMap;
 
 
 namespace dotGit.Objects.Storage
 {
   public class PackV2 : Pack
   {
+    private MemoryMappedFile _map;
+    private int length;
+
+
+    #region Constructors / Destructor
+
     internal PackV2(Repository repo, string path)
       : base(repo, path)
     {
       Index = new PackIndexV2(IndexFilePath);
       Pack = new PackFileV2(Repo, PackFilePath);
+
+      MapPackFile();
     }
+
+    ~PackV2()
+    {
+      if (_map != null)
+        _map.Close();
+      _map = null;
+    }
+
+    #endregion
+
+    #region Properties
 
     public override int Version
     {
@@ -47,6 +67,21 @@ namespace dotGit.Objects.Storage
       set;
     }
 
+    #endregion
+
+    private void MapPackFile()
+    {
+      // create a unique name for this memory map
+      string name = "MX=" + Guid.NewGuid().ToString();
+
+      // determine file size and create a memory map from the Pack file.
+      FileInfo info = new FileInfo(PackFilePath);
+      length = (int)info.Length;
+
+      _map = MemoryMappedFile.Create(PackFilePath, MapProtection.PageReadWrite, info.Length, name);
+
+    }
+
     public override IStorableObject GetObject(string sha)
     {
       Debug.WriteLine("Fetching object with sha: {0}".FormatWith(sha));
@@ -57,7 +92,7 @@ namespace dotGit.Objects.Storage
         {
           long packFileOffset = Index.GetPackFileOffset(new Sha(sha));
 
-          using (GitObjectReader reader = new GitObjectReader(File.OpenRead(PackFilePath)))
+          using (GitObjectReader reader = new GitObjectReader(_map.MapView(MapAccess.FileMapRead, 0, length)))
           {
             reader.Position = packFileOffset;
             PackObject obj = Pack.GetObjectWithOffset(reader);

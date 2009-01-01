@@ -10,6 +10,9 @@ using dotGit.Objects.Storage;
 
 namespace dotGit.Objects
 {
+  /// <summary>
+  /// Class representing the binary contents of a Git tree object
+  /// </summary>
 	public class Blob : TreeNode
 	{
 		internal Blob(Repository repo)

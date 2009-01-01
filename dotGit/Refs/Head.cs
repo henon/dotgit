@@ -12,7 +12,9 @@ namespace dotGit.Refs
 	{
 		private Commit _commit = null; // Will only be set if HEAD is detached
 
-		internal Head(Repository repo)
+    #region Constructors
+
+    internal Head(Repository repo)
 		{
 			Repo = repo;
 
@@ -31,9 +33,13 @@ namespace dotGit.Refs
 			{
 				_commit = Repo.Storage.GetObject<Commit>(headContents);
 			}
-		}
+    }
 
-		/// <summary>
+    #endregion
+
+    #region Properties
+
+    /// <summary>
 		/// The branch you're currently working on. Returns null if detached
 		/// </summary>
 		public Branch Branch
@@ -64,11 +70,16 @@ namespace dotGit.Refs
 			}
 		}
 
+    /// <summary>
+    /// Reference to the repository this object belongs to.
+    /// </summary>
 		protected Repository Repo
 		{
 			get;
 			private set;
-		}
+    }
 
-	}
+    #endregion
+
+  }
 }

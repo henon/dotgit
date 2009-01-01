@@ -8,6 +8,9 @@ using dotGit.Exceptions;
 
 namespace dotGit.Objects.Storage
 {
+  /// <summary>
+  /// The GitObjectReader class is used by the dotGit library as a wrapper around several lower level file/memory streams.
+  /// </summary>
   public class GitObjectReader : BinaryReader
   {
     public GitObjectReader(Stream stream)
@@ -23,6 +26,10 @@ namespace dotGit.Objects.Storage
       return SkipChars('\0');
     }
 
+    /// <summary>
+    /// Read bytes from the stream while the character is <param>charToSkip</param>. Returns the read characters as a byte-array.
+    /// </summary>
+    /// <param name="charToSkip">Character to skip</param>
     public byte[] SkipChars(char charToSkip)
     {
       using (MemoryStream ms = new MemoryStream())
@@ -36,6 +43,13 @@ namespace dotGit.Objects.Storage
       }
     }
 
+    /// <summary>
+    /// Read bytes from the stream until the stop character is found. The <paramref name="consume"/> parameter controls wheter the stream position 
+    /// needs to be reset after reading from the stream
+    /// </summary>
+    /// <param name="stop">Character to stop reading at</param>
+    /// <param name="consume">boolean value indicating if we want to reset the position in the stream after reading</param>
+    /// <returns>byte[]</returns>
     public byte[] ReadToChar(char stop, bool consume)
     {
       using (MemoryStream ms = new MemoryStream())
@@ -54,11 +68,20 @@ namespace dotGit.Objects.Storage
       }
     }
 
+    /// <summary>
+    /// Reads from the stream until the bytes read can be inflated to the size passed in the <paramref name="destLength"/> parameter.
+    /// </summary>
+    /// <param name="destLength">Desired uncompressed object size</param>
+    /// <returns>MemorySream containing the inflated contents</returns>
     public MemoryStream UncompressToLength(long destLength)
     {
       return Zlib.Decompress(this, destLength);
     }
 
+    /// <summary>
+    /// Reads bytes from the stream until a space character is found. The bytes read are returned from this function.
+    /// </summary>
+    /// <returns></returns>
     public byte[] ReadWord()
     {
       return ReadToChar(' ', true);
@@ -69,6 +92,10 @@ namespace dotGit.Objects.Storage
       return ReadToChar(' ', consumeSpace);
     }
 
+    /// <summary>
+    /// Reads bytes from the stream until a newline character (\n) is found. The newline is skipped.
+    /// </summary>
+    /// <returns></returns>
     public byte[] ReadLine()
     {
       return ReadToChar('\n', true);

@@ -10,7 +10,9 @@ namespace dotGit.Refs
 	{
 		private Dictionary<string, string> _packedRefs;
 
-		private PackedRefs()
+    #region Constructors
+
+    private PackedRefs()
 		{ }
 
 		internal PackedRefs(Repository repo)
@@ -18,9 +20,34 @@ namespace dotGit.Refs
 			Repo = repo;
 
 				Load();
-		}
+    }
 
-		internal void Load()
+    #endregion
+
+    #region Properties
+
+    /// <summary>
+    /// Reference to the repository this Ref belongs to.
+    /// </summary>
+    protected Repository Repo
+    {
+      get;
+      private set;
+    }
+
+    public Dictionary<string, string>.KeyCollection Keys
+    {
+      get { return _packedRefs.Keys; }
+    }
+
+    public string this[string path]
+    {
+      get { return _packedRefs[path]; }
+    }
+
+    #endregion
+
+    internal void Load()
 		{
 			string[] refs = File.ReadAllLines(Path.Combine(Repo.GitDir.FullName, "packed-refs"));
 			refs = refs.Where(r => !r.StartsWith("#") && !r.StartsWith("^")).ToArray();
@@ -35,25 +62,6 @@ namespace dotGit.Refs
 
 				_packedRefs.Add(path, sha);
 			}
-		}
-
-		protected Repository Repo
-		{
-			get;
-			private set;
-		}
-
-		public Dictionary<string, string>.KeyCollection Keys
-		{
-			get { return _packedRefs.Keys; }
-		}
-
-		public string this[string path]
-		{
-			get { return _packedRefs[path]; }
-		}
-		
-	}
-
-
+    }
+  }
 }

@@ -44,12 +44,18 @@ namespace dotGit.Objects
       protected set;
     }
 
+    /// <summary>
+    /// Reference to the repository this object belongs to
+    /// </summary>
     protected Repository Repo
     {
       get;
       private set;
     }
 
+    /// <summary>
+    /// Size of this object in bytes
+    /// </summary>
     public long Size
     {
       get;

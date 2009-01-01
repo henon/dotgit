@@ -19,7 +19,8 @@ namespace dotGit.Index
     {
       Repo = repo;
 
-      using (GitObjectReader stream = new GitObjectReader(File.OpenRead(Path.Combine(Repo.GitDir.FullName, "index"))))
+      using (GitObjectReader stream = new GitObjectReader(
+        new FileStream(Path.Combine(Repo.GitDir.FullName, "index"), System.IO.FileMode.Open, FileAccess.Read, FileShare.Read, 8192)))
       {
         string header = stream.ReadBytes(4).GetString();
 

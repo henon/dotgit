@@ -12,7 +12,7 @@ namespace dotGit.Objects
 {
   public class Zlib
   {
-    private static readonly int bufferLength = 1024;
+    private static readonly int bufferLength = 16384;
 
     /// <summary>
     /// Returns a MemoryStream with the 'inflated' contents of the file specified in the <paramref name="path"/> parameter.
@@ -25,7 +25,7 @@ namespace dotGit.Objects
       int size;
 
       MemoryStream output = new MemoryStream();
-      using (FileStream fs = new FileStream(path, System.IO.FileMode.Open))
+      using (FileStream fs = new FileStream(path, System.IO.FileMode.Open, FileAccess.Read, FileShare.Read, 8192))
       {
         using (InflaterInputStream inflaterStream = new InflaterInputStream(fs))
         {
@@ -66,7 +66,6 @@ namespace dotGit.Objects
     /// <returns>Inflated contents in a MemoryStream</returns>
     public static MemoryStream Decompress(GitObjectReader input, long destLength)
     {
-
       MemoryStream output = new MemoryStream();
       Inflater inflater = new Inflater();
 

@@ -5,6 +5,10 @@ using System.Text;
 
 namespace dotGit.Objects
 {
+
+  /// <summary>
+  /// Enumeration used to represent the objects mode in the git repository
+  /// </summary>
 	public class FileMode
   {
     private readonly static List<FileMode> _list = new List<FileMode>(6);
@@ -23,7 +27,6 @@ namespace dotGit.Objects
 		public static readonly FileMode Missing = new FileMode("Missing", 0000000, ObjectType.Bad);
     #endregion FileModes
 
-
 		private FileMode(string name, int mode, ObjectType type)
 		{
       Name = name;
@@ -39,11 +42,13 @@ namespace dotGit.Objects
       get; 
       private set; 
     }
+
 		public ObjectType ObjectType 
     { 
       get; 
       private set; 
     }
+
     public string Name 
     { 
       get; 

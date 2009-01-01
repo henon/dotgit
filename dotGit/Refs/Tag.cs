@@ -16,6 +16,9 @@ namespace dotGit.Refs
   /// </summary>
   public class Tag : Ref, IStorableObject
   {
+
+    #region Constructors
+
     internal Tag(Repository repo, string sha)
       : base(repo, sha)
     { }
@@ -41,6 +44,10 @@ namespace dotGit.Refs
         return t;
       }
     }
+
+    #endregion
+
+    #region Properties
 
     /// <summary>
     /// The IStorableObject this tag references
@@ -93,6 +100,16 @@ namespace dotGit.Refs
       get { return !String.IsNullOrEmpty(Message) && Tagger != null && TagDate != null; }
     }
 
+    /// <summary>
+    /// Size of this Tag in bytes
+    /// </summary>
+    public long Size
+    {
+      get;
+      private set;
+    }
+
+    #endregion
 
     /// <summary>
     /// Loads the tag from the GitObjectReader
@@ -134,12 +151,6 @@ namespace dotGit.Refs
         Message = input.ReadToEnd().GetString().TrimEnd();
 
       }
-    }
-
-    public long Size
-    {
-      get;
-      private set;
     }
 
     internal override void Deserialize()

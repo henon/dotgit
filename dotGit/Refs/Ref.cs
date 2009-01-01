@@ -16,8 +16,10 @@ namespace dotGit.Refs
 	/// Represents a reference to an object
 	/// </summary>
 	public abstract class Ref
-	{
-		private Ref(Repository repo)
+  {
+    #region Constructors
+
+    private Ref(Repository repo)
 		{
 			Repo = repo;
 		}
@@ -32,9 +34,16 @@ namespace dotGit.Refs
 			: this(repo, sha)
 		{
 			Path = path;
-		}
+    }
 
-		protected Repository Repo
+    #endregion
+
+    #region Properties
+
+    /// <summary>
+    /// Reference to the repository this Ref belongs to.
+    /// </summary>
+    protected Repository Repo
 		{
 			get;
 			private set;
@@ -61,9 +70,11 @@ namespace dotGit.Refs
 		public string Name
 		{
 			get { return IO.Path.GetFileName(Path); }
-		}
+    }
 
-		internal abstract void Deserialize();
+    #endregion
+
+    internal abstract void Deserialize();
 		
 	}
 }

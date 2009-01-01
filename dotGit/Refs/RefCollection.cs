@@ -9,16 +9,21 @@ namespace dotGit.Refs
 {
 	public class RefCollection<T> : InternalWritableList<T>
 		where T : Ref
-	{
-		internal RefCollection()
+  {
+
+    #region Constructors
+
+    internal RefCollection()
 			:base()
 		{	}
 
 		internal RefCollection(int capacity)
 			:base(capacity)
-		{	}
+		{ }
 
-		public T this[string name]
+    #endregion
+
+    public T this[string name]
 		{
 			get
 			{
