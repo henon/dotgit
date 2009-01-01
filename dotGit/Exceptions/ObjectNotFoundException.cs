@@ -5,6 +5,9 @@ using System.Text;
 
 namespace dotGit.Exceptions
 {
+  /// <summary>
+  /// Exception thrown when an object cannot be found in the repository. See Pack.GetObject() method.
+  /// </summary>
 	public class ObjectNotFoundException : Exception
 	{
 		public ObjectNotFoundException(string sha)

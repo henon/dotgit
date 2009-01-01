@@ -10,11 +10,19 @@ namespace dotGit
 {
 	public static class Extensions
 	{
+    /// <summary>
+    /// Extension method for the String class to use instead of the String.Format method
+    /// </summary>
 		public static string FormatWith(this string input, params object[] parameters)
 		{
 			return String.Format(input, parameters);
 		}
 
+    /// <summary>
+    /// Returns a hex-string representation of the SHA input 
+    /// </summary>
+    /// <param name="input">SHA byte array</param>
+    /// <returns>String</returns>
 		public static string ToSHAString(this byte[] input)
 		{
 			string sha = Sha.Decode(input);

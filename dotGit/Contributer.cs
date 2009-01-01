@@ -8,9 +8,16 @@ using dotGit.Objects;
 
 namespace dotGit
 {
+
+  /// <summary>
+  /// Class to represent an author or committer in the Git world. Mainly used by the pack file when reading a Commit.
+  /// </summary>
 	public class Contributer
-	{
-		private Contributer()
+  {
+    
+    #region Constructors
+
+    private Contributer()
 		{	}
 
 		public Contributer(string name)
@@ -22,9 +29,11 @@ namespace dotGit
 			:this(name)
 		{
 			Email = email;
-		}
+    }
 
-		/// <summary>
+    #endregion
+
+    /// <summary>
 		/// Load Contributer from git formatted string.
 		/// </summary>
 		/// <param name="input">string in format: 'John Doe &lt;john@doe.com&gt;'</param>

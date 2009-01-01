@@ -8,9 +8,14 @@ using dotGit.Objects.Storage;
 
 namespace dotGit.Generic
 {
+  /// <summary>
+  /// Class representing a SHA 'object' in the Git repository. It also has a couple of helper functions to make comparing and
+  /// converting from/to SHA's easier.
+  /// </summary>
   public class Sha
   {
     private static readonly SHA1 _sha = SHA1.Create();
+    private int[] words = new int[5];
 
     public static string Compute(byte[] contents)
     {
@@ -22,7 +27,6 @@ namespace dotGit.Generic
     {
       return BitConverter.ToString(sha).Replace("-", "").ToLower();
     }
-
 
     internal static string Compute(GitObjectReader input)
     {
@@ -37,7 +41,7 @@ namespace dotGit.Generic
       return hash;
     }
 
-    private int[] words = new int[5];
+    #region Constructor
 
     public Sha(string sha)
     {
@@ -54,10 +58,14 @@ namespace dotGit.Generic
       words[2] = System.Net.IPAddress.HostToNetworkOrder(System.BitConverter.ToInt32(b, 8));
       words[3] = System.Net.IPAddress.HostToNetworkOrder(System.BitConverter.ToInt32(b, 12));
       words[4] = System.Net.IPAddress.HostToNetworkOrder(System.BitConverter.ToInt32(b, 16));
-      
+
     }
 
-		public int FirstByte
+    #endregion
+
+    #region Properties
+
+    public int FirstByte
 		{
 			get;
 			private set;
@@ -67,9 +75,13 @@ namespace dotGit.Generic
 		{
 			get;
 			private set;
-		}
+    }
 
-		public override string ToString()
+    #endregion
+
+    #region System Overrides
+
+    public override string ToString()
 		{
 			return SHAString;
 		}
@@ -98,7 +110,6 @@ namespace dotGit.Generic
       return words[4].CompareTo(data[idx + 4]);
     }
 
-
     public override bool Equals(object obj)
     {
       if (obj is Sha)
@@ -107,6 +118,13 @@ namespace dotGit.Generic
         return false;
     }
 
+    #endregion
+
+    #region Private Helpers
+
+    /// <summary>
+    /// Function to convert a hex-string SHA to a byte array. Thanks to George Helyar (http://www.codeproject.com/KB/recipes/hexencoding.aspx?fid=15401&df=90&mpp=25&noise=3&sort=Position&view=Quick&select=2494780#xx2494780xx)
+    /// </summary>
     private byte[] HexToData(string hexString)
     {
       if (hexString == null)
@@ -122,5 +140,7 @@ namespace dotGit.Generic
 
       return data;
     }
+
+    #endregion
   }
 }

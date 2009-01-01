@@ -16,7 +16,7 @@ using dotGit.Config;
 namespace dotGit
 {
 	/// <summary>
-	/// 
+	/// The Git repository in dotGit is represented by this class. It provides access to the objects in it as well as methods for manipulating the repository, right here, from managed code.
 	/// </summary>
 	public class Repository
 	{
@@ -175,7 +175,6 @@ namespace dotGit
 		#endregion Constructors / Factory and Lazyload methods
 
 		#region Properties
-
 
 		/// <summary>
 		/// The HEAD of the repository. If it's detached, the Branch property returns NULL

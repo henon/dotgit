@@ -6,6 +6,9 @@ using dotGit.Objects;
 
 namespace dotGit.Objects.Storage
 {
+  /// <summary>
+  /// This interface is implemented by every object living in the Git pack file. It handles (de)serialization from/to the raw byte contents.
+  /// </summary>
   public interface IStorableObject
   {
     /// <summary>

@@ -6,6 +6,9 @@ using dotGit.Generic;
 
 namespace dotGit.Objects.Storage.PackObjects
 {
+  /// <summary>
+  /// Base class representing a object in the Git Pack file. Not to be used directly.
+  /// </summary>
   public abstract class PackObject
   {
     private PackObject()
@@ -17,6 +20,9 @@ namespace dotGit.Objects.Storage.PackObjects
       Type = type;
     }
 
+    /// <summary>
+    /// Size of this object in bytes.
+    /// </summary>
     public long Size
     {
       get;
