@@ -12,65 +12,44 @@ namespace dotGit.Objects
 {
   public class Zlib
   {
+    private static readonly int bufferLength = 1024;
+
     public static MemoryStream Decompress(string path)
     {
-      return Decompress(new GitObjectReader(File.OpenRead(path)));
-    }
+      byte[] buffer = new byte[bufferLength];
+      int size;
 
-    public static MemoryStream Decompress(BinaryReader input)
-    {
-      var output = new MemoryStream();
-      var zipStream = new Inflater();
-
-      using (input)
+      MemoryStream output = new MemoryStream();
+      using (FileStream fs = new FileStream(path, System.IO.FileMode.Open))
       {
-        var buffer = new byte[2000];
-        int len;
-
-        while (input.BaseStream.Position < input.BaseStream.Length)
+        using (InflaterInputStream inflaterStream = new InflaterInputStream(fs))
         {
-          if (zipStream.IsNeedingInput)
-            zipStream.SetInput(input.ReadBytes(buffer.Length));
-
-          zipStream.Inflate(buffer);
-          output.Write(buffer, 0, buffer.Length);
+          while ((size = inflaterStream.Read(buffer, 0, buffer.Length)) > 0 )
+              output.Write(buffer, 0, size);
         }
       }
-
-      output.Position = 0;
-
-      byte[] content = new byte[output.Length];
-
-      output.Read(content, 0, (int)output.Length);
-
       return output;
     }
 
     public static byte[] Decompress(byte[] input)
     {
-      using (MemoryStream output = new MemoryStream())
-      {
-        using (InflaterInputStream zipStream = new InflaterInputStream(output))
-        {
-          using (MemoryStream inputStream = new MemoryStream(input))
-          {
-            var buffer = new byte[2000];
-            int len;
+      byte[] buffer = new byte[bufferLength];
+      int size;
 
-            while ((len = inputStream.Read(buffer, 0, 2000)) > 0)
-            {
-              zipStream.Write(buffer, 0, len);
-            }
-          }
+      using (MemoryStream output = new MemoryStream(input))
+      {
+        using (InflaterInputStream inflaterStream = new InflaterInputStream(output))
+        {
+          while ((size = inflaterStream.Read(buffer, 0, buffer.Length)) > 0)
+            output.Write(buffer, 0, size);
         }
+
         return output.ToArray();
       }
     }
 
     public static MemoryStream Decompress(GitObjectReader input, long destLength)
     {
-      int bufferLength = 1024;
-
 
       MemoryStream output = new MemoryStream();
       Inflater inflater = new Inflater();
