@@ -182,5 +182,24 @@ namespace dotGit.Objects
 		}
 
 
+
+    public override string ToString()
+    {
+      return SHA;
+    }
+
+    public override bool Equals(object obj)
+    {
+      if (obj is Commit)
+        return SHA.Equals(((Commit)obj).SHA);
+      else
+        return false;
+
+    }
+    public override int GetHashCode()
+    {
+      return SHA.GetHashCode();
+    }
+
 	}
 }
