@@ -14,6 +14,11 @@ namespace dotGit.Objects
   {
     private static readonly int bufferLength = 1024;
 
+    /// <summary>
+    /// Returns a MemoryStream with the 'inflated' contents of the file specified in the <paramref name="path"/> parameter.
+    /// </summary>
+    /// <param name="path">Full path to the deflated file</param>
+    /// <returns>Decompressed (inflated) MemoryStream</returns>
     public static MemoryStream Decompress(string path)
     {
       byte[] buffer = new byte[bufferLength];
@@ -31,6 +36,11 @@ namespace dotGit.Objects
       return output;
     }
 
+    /// <summary>
+    /// Returns a byte-array with the 'inflated' contents of the input array.
+    /// </summary>
+    /// <param name="input">inflated byte-array</param>
+    /// <returns>Decompressed (inflated) byte-array</returns>
     public static byte[] Decompress(byte[] input)
     {
       byte[] buffer = new byte[bufferLength];
@@ -47,7 +57,13 @@ namespace dotGit.Objects
         return output.ToArray();
       }
     }
-
+    
+    /// <summary>
+    /// Returns a MemoryStream with the 'inflated' contents of the object in the GitObjectReader starting at the current stream position and with a decompressed size of <param name="destLength">destLength</param>
+    /// </summary>
+    /// <param name="input">An open GitObjectReader object pointing to a file system object in the Git Repository</param>
+    /// <param name="destLength">Inflate the contents in the stream until the decompressed array reaches this size</param>
+    /// <returns>Inflated contents in a MemoryStream</returns>
     public static MemoryStream Decompress(GitObjectReader input, long destLength)
     {
 
@@ -72,6 +88,7 @@ namespace dotGit.Objects
         }
       }
 
+      // rewind stream to end of content (buffer overhead)
       input.Position -= inflater.RemainingInput;
 
 
