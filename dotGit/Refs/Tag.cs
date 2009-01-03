@@ -110,10 +110,6 @@ namespace dotGit.Refs
       {
         input.Rewind();
 
-        input.ReadToNull();
-        if (input.IsEndOfStream)
-          input.Rewind();
-
         // Skip object keyword
         input.ReadWord();
 
@@ -138,6 +134,12 @@ namespace dotGit.Refs
         Message = input.ReadToEnd().GetString().TrimEnd();
 
       }
+    }
+
+    public long Size
+    {
+      get;
+      private set;
     }
 
     internal override void Deserialize()
