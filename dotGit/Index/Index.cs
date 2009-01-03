@@ -50,19 +50,27 @@ namespace dotGit.Index
     private Repository Repo
     { get; set; }
 
-
+    /// <summary>
+    /// Version of this index
+    /// </summary>
     public int Version
     {
       get;
       private set;
     }
 
+    /// <summary>
+    /// Number of entries in this index
+    /// </summary>
     public int NumberOfEntries
     {
       get;
       private set;
     }
 
+    /// <summary>
+    /// All entries in the index
+    /// </summary>
     public IndexEntryCollection Entries
     {
       get;
