@@ -10,67 +10,68 @@ using dotGit.Objects.Storage;
 
 namespace dotGit.Index
 {
-	public class Index
-	{
-		private static readonly string HEADER = "DIRC";
-		private static readonly int[] VERSIONS = new int[] { 2 };
+  public class Index
+  {
+    private static readonly string HEADER = "DIRC";
+    private static readonly int[] VERSIONS = new int[] { 2 };
 
-		internal Index(Repository repo)
-		{
-			Repo = repo;
+    internal Index(Repository repo)
+    {
+      Repo = repo;
 
-			using(GitObjectReader stream = new GitObjectReader(File.OpenRead(Path.Combine(Repo.GitDir.FullName, "index"))))
-			{
-				string header = stream.ReadBytes(4).GetString();
+      using (GitObjectReader stream = new GitObjectReader(File.OpenRead(Path.Combine(Repo.GitDir.FullName, "index"))))
+      {
+        string header = stream.ReadBytes(4).GetString();
 
-				if (header != HEADER)
-					throw new ParseException("Could not parse Index file. Expected HEADER: '{0}', got: '{1}'".FormatWith(HEADER, header));
+        if (header != HEADER)
+          throw new ParseException("Could not parse Index file. Expected HEADER: '{0}', got: '{1}'".FormatWith(HEADER, header));
 
-				Version = stream.ReadBytes(4).Sum(b => (int)b);
+        Version = stream.ReadBytes(4).Sum(b => (int)b);
 
-				if (!VERSIONS.Contains(Version))
-					throw new ParseException("Unknown version number {0}. Needs to be one of: {1}".FormatWith(Version, String.Join(",", VERSIONS.Select(i => i.ToString()).ToArray())));
+        if (!VERSIONS.Contains(Version))
+          throw new ParseException("Unknown version number {0}. Needs to be one of: {1}".FormatWith(Version, String.Join(",", VERSIONS.Select(i => i.ToString()).ToArray())));
 
 
         NumberOfEntries = System.Net.IPAddress.HostToNetworkOrder(stream.ReadBytes(4).ToInt());
 
-				Entries = new IndexEntryCollection(NumberOfEntries);
+        Entries = new IndexEntryCollection(NumberOfEntries);
 
 
-				for (int i = 0; i < NumberOfEntries; i++)
-				{
-					Entries.Add(new IndexEntry(stream));
-				}
-				
-				string indexSHA = stream.ReadToEnd().ToSHAString();
-			}
-		}
+        for (int i = 0; i < NumberOfEntries; i++)
+        {
+          Entries.Add(new IndexEntry(stream));
+        }
 
-		private Repository Repo
-		{ get; set; }
+        stream.Position = stream.BaseStream.Length - 20;
+        string indexSHA = stream.ReadToEnd().ToSHAString();
+      }
+    }
+
+    private Repository Repo
+    { get; set; }
 
 
-		public int Version
-		{
-			get;
-			private set;
-		}
+    public int Version
+    {
+      get;
+      private set;
+    }
 
-		public int NumberOfEntries
-		{
-			get;
-			private set;
-		}
+    public int NumberOfEntries
+    {
+      get;
+      private set;
+    }
 
-		public IndexEntryCollection Entries
-		{
-			get;
-			private set;
-		}
+    public IndexEntryCollection Entries
+    {
+      get;
+      private set;
+    }
 
-		public bool StageIsNormal
-		{
-			get { return !Entries.Any(e => e.Stage != IndexStage.Normal); }
-		}
-	}
+    public bool StageIsNormal
+    {
+      get { return !Entries.Any(e => e.Stage != IndexStage.Normal); }
+    }
+  }
 }
