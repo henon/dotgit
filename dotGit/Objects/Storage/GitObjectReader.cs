@@ -40,13 +40,15 @@ namespace dotGit.Objects.Storage
     {
       using (MemoryStream ms = new MemoryStream())
       {
-        while (PeekChar() != stop)
+        byte buffer;
+
+        while ((buffer = ReadByte()) != stop)
         {
-          ms.WriteByte(ReadByte());
+          ms.WriteByte(buffer);
         }
 
-        if (consume)
-          BaseStream.Position++;
+        if (!consume)
+          BaseStream.Position--;
 
         return ms.ToArray();
       }
@@ -92,7 +94,7 @@ namespace dotGit.Objects.Storage
       if (!IsStartOfStream)
         Rewind();
 
-      long length;
+      long length = 0;
 
       string typeString = ReadWord().GetString();
       switch (typeString)
@@ -112,7 +114,16 @@ namespace dotGit.Objects.Storage
         default:
           throw new ParseException("Unknown type: {0}".FormatWith(typeString));
       }
-      length = ReadToNull().Sum(b => b);
+
+      byte buffer = ReadByte();
+      int bitCount = 8;
+      while (buffer != '\0')
+      {
+        length |= (long)buffer << bitCount;
+        bitCount += 8;
+        buffer = ReadByte();
+      }
+
       return length;
     }
 
