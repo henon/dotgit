@@ -48,6 +48,12 @@
     <Compile Include="Config\ConfigSections.cs" />
     <Compile Include="Config\Configuration.cs" />
     <Compile Include="Diff\Diff.cs" />
+    <Compile Include="Diff\Engine\DiffEngine.cs" />
+    <Compile Include="Diff\Engine\DiffResultsSpan.cs" />
+    <Compile Include="Diff\Engine\DiffState.cs" />
+    <Compile Include="Diff\Engine\DiffStateList.cs" />
+    <Compile Include="Diff\Engine\Enums.cs" />
+    <Compile Include="Diff\Engine\IDiffList.cs" />
     <Compile Include="Exceptions\ObjectNotFoundException.cs" />
     <Compile Include="Exceptions\PackFileException.cs" />
     <Compile Include="Exceptions\ParseException.cs" />
