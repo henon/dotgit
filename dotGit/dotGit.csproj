@@ -53,7 +53,6 @@
     <Compile Include="Exceptions\ParseException.cs" />
     <Compile Include="Exceptions\ShaMismatchException.cs" />
     <Compile Include="Generic\Extensions.cs" />
-    <Compile Include="Generic\HexEncoding.cs" />
     <Compile Include="Index\Index.cs" />
     <Compile Include="Index\IndexEntry.cs" />
     <Compile Include="Index\IndexEntryCollection.cs" />

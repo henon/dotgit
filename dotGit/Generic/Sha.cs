@@ -37,16 +37,13 @@ namespace dotGit.Generic
       return hash;
     }
 
-
     private int[] words = new int[5];
-    
 
     public Sha(string sha)
     {
 			SHAString = sha;
 
-      int discarded = 0;
-      byte[] b = HexEncoding.GetBytes(sha, out discarded);
+      byte[] b = HexToData(sha);
      
       words = new int[5];
 
@@ -101,5 +98,29 @@ namespace dotGit.Generic
       return words[4].CompareTo(data[idx + 4]);
     }
 
+
+    public override bool Equals(object obj)
+    {
+      if (obj is Sha)
+        return this.SHAString.Equals(((Sha)obj).SHAString);
+      else
+        return false;
+    }
+
+    private byte[] HexToData(string hexString)
+    {
+      if (hexString == null)
+        return null;
+
+      if (hexString.Length % 2 == 1)
+        hexString = '0' + hexString;
+
+      byte[] data = new byte[hexString.Length / 2];
+
+      for (int i = 0; i < data.Length; i++)
+        data[i] = Convert.ToByte(hexString.Substring(i * 2, 2), 16);
+
+      return data;
+    }
   }
 }
