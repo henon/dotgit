@@ -78,7 +78,7 @@ namespace dotGit.Objects.Storage
       FileInfo info = new FileInfo(PackFilePath);
       length = (int)info.Length;
 
-      _map = MemoryMappedFile.Create(PackFilePath, MapProtection.PageReadWrite, info.Length, name);
+      _map = MemoryMappedFile.Create(PackFilePath, MapProtection.PageReadOnly, info.Length, name);
 
     }
 
