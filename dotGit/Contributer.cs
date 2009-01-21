@@ -40,18 +40,14 @@ namespace dotGit
 		/// <returns>parsed Contributer</returns>
 		public static Contributer Parse(string input)
 		{
-			Match match = Utility.ContributorRegex.Match(input);
-			string name, email = String.Empty;
-			if (match.Success)
-			{ // Found email address
-				name = input.Substring(0, match.Index).Trim();
-				email = match.Captures[0].Value.Trim(' ', '<', '>');
-			}
-			else
-			{ // No email adress found
-				name = input;
-			}
-
+      string name = input;
+      string email=String.Empty;
+      int index = input.LastIndexOf('<');
+      if( index > -1 )
+      {
+        name = input.Substring(0,index-1).Trim();
+        email = input.Substring(index).Trim(' ','>','<');
+      }
 			return new Contributer(name, email);
 		}
 

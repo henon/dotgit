@@ -10,11 +10,9 @@ namespace dotGit.Objects
 {
   public class Utility
   {
-    public static readonly Regex TrailingDotGitExpression = new Regex(@"\.git\/?\Z", RegexOptions.Compiled);
     public static readonly Regex SHAExpression = new Regex(@"^([a-f]|\d){40}\Z", RegexOptions.Compiled);
     public static readonly Regex DateTimeRegex = new Regex(@"\s(\d)+(\s(\+|-)(\d){4})?\Z", RegexOptions.Compiled);
     public static readonly DateTime UnixEPOCH = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-    public static readonly Regex ContributorRegex = new Regex(@"\s\<[A-Za-z0-9](([_\.\-]?[a-zA-Z0-9]+)*)@([A-Za-z0-9]+)(([\.\-]?[a-zA-Z0-9]+)*)\.([A-Za-z]{2,})\>", RegexOptions.Compiled);
 
     /// <summary>
     /// Verifies dir is, or contains a .git directory
@@ -43,7 +41,7 @@ namespace dotGit.Objects
       }
 
       // Check if trailing ".git" was passed
-      if (TrailingDotGitExpression.IsMatch(dir.FullName))
+      if (dir.FullName.EndsWith(".git"))
       { // .git directory found, no need to do anything
         gitDir = dir;
         return true;
@@ -105,7 +103,7 @@ namespace dotGit.Objects
     {
       bool hideGitDir = false;
 
-      if (!TrailingDotGitExpression.IsMatch(path))
+      if (!path.EndsWith(".git"))
       {
         path = Path.Combine(path, ".git");
         hideGitDir = true;
