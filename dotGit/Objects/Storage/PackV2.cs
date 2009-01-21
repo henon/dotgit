@@ -76,7 +76,6 @@ namespace dotGit.Objects.Storage
 
       // determine file size and create a memory map from the Pack file.
       FileInfo info = new FileInfo(PackFilePath);
-      length = (int)info.Length;
 
       _map = MemoryMappedFile.Create(PackFilePath, MapProtection.PageReadOnly, info.Length, name);
 
