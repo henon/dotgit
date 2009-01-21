@@ -103,27 +103,37 @@ namespace dotGit.Objects.Storage
             }
             else if (obj is Deltified)
             {
+              // Loop while we're still finding delta's and collect them
+
+              // Kick it off with the object found above
               List<Deltified> deltas = new List<Deltified>();
               deltas.Add((Deltified)obj);
+
+
               while (obj is Deltified)
               {
                 if (obj is REFDelta)
-                {
+                { // It's a REFDelta, we need fetch an offset from the idx file
                   string baseSha = ((REFDelta)obj).BaseSHA;
                   packFileOffset = Index.GetPackFileOffset(new Sha(baseSha));
                 }
                 else
-                {
+                { // It's an OFSDelta, apply it to current packFileOffset
                   packFileOffset -= ((OFSDelta)obj).BackwardsBaseOffset;
                 }
+
+                // Set stream offset to new object's offset
                 reader.Position = packFileOffset;
 
+                // Fetch next object
                 obj = Pack.GetObjectWithOffset(reader);
 
+                // Collect delta
                 if (obj is Deltified)
                   deltas.Add((Deltified)obj);
               }
 
+              // Whole object found! Apply found delta's starting with the last one we've found
               for (int i = deltas.Count - 1; i >= 0; i--)
               {
                 ((Undeltified)obj).ApplyDelta(deltas[i]);

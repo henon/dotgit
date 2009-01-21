@@ -1,9 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Comment CommentText="IStorableObject is the common interface for objects that Git stores in it's database. These are: &#xD;&#xA;- Blob&#xD;&#xA;- Tree&#xD;&#xA;- Commit&#xD;&#xA;- Tag">
+    <Position X="0.5" Y="0.552" Height="1.437" Width="1.752" />
+  </Comment>
   <Class Name="dotGit.Objects.GitObject" Collapsed="true">
     <Position X="3" Y="5.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAACAAAABACBAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAgAAAAACAAAABACBAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Objects\GitObject.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -32,28 +35,28 @@
   <Class Name="dotGit.Objects.Commit" Collapsed="true">
     <Position X="5" Y="5.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAgAACCAEAAAgAACwAEQACBAAAAAAAAAIAAACAA=</HashCode>
+      <HashCode>AAAAQAgAACCACAAEgAAAgAEAACBAAIAAAAAAIAAoCAI=</HashCode>
       <FileName>Objects\Commit.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="dotGit.Refs.Ref" Collapsed="true">
     <Position X="3.75" Y="2.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAACAAIAAAAAAAQBAAAEAAAAAAAAAACAEAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAIAAACAAAQBAABAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Refs\Ref.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="dotGit.Refs.Branch" Collapsed="true">
     <Position X="3" Y="4" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAEAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAQ=</HashCode>
       <FileName>Refs\Branch.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="dotGit.Refs.Tag" Collapsed="true">
     <Position X="5" Y="4" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>IAAAAAACABAAAAAgAACAACAAACBAAAAAAAAAIAAAAAA=</HashCode>
+      <HashCode>AAAAgAACABAAgAAgAAAAACACACBAAAAAAAAAIAAAAAA=</HashCode>
       <FileName>Refs\Tag.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -68,7 +71,7 @@
   <Class Name="dotGit.Repository" Collapsed="true">
     <Position X="3.75" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AIAAAAACCIAAKAAAAAggAAAIAACAAEAAAAECAAABgoA=</HashCode>
+      <HashCode>AIQAAAACCoAAKAAAAAggAAAAAACAAEAAAAECAAABgpA=</HashCode>
       <FileName>Repository.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -86,10 +89,38 @@
       <FileName>Objects\TreeNodeCollection.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Interface Name="dotGit.Objects.Storage.IStorableObject">
-    <Position X="0.5" Y="1.5" Width="1.5" />
+  <Class Name="dotGit.Objects.Storage.Pack" Collapsed="true">
+    <Position X="11.5" Y="1.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAACAAAAAACBAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>IAAAAAAAAAAAIAIAAAAAIAABAAAAAAABAAAAAAAAAAA=</HashCode>
+      <FileName>Objects\Storage\Pack.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="dotGit.Objects.Storage.PackIndexV2" Collapsed="true">
+    <Position X="12.25" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IQAAhAAgAAAAAAIAAAAAAAABEIACAAABQAEAAAAAAAA=</HashCode>
+      <FileName>Objects\Storage\PackIndexV2.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="dotGit.Objects.Storage.PackV2" Collapsed="true">
+    <Position X="12" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAAAAAAIAQAAEAAAAAAAAAAAAAACEEEAAAABAA=</HashCode>
+      <FileName>Objects\Storage\PackV2.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="dotGit.Objects.Storage.PackFileV2" Collapsed="true">
+    <Position X="10" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAQAAAABAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAgAA=</HashCode>
+      <FileName>Objects\Storage\PackFileV2.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="dotGit.Objects.Storage.IStorableObject">
+    <Position X="0.5" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAgAAAAACAAAAAACBAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Objects\Storage\IStorableObject.cs</FileName>
     </TypeIdentifier>
   </Interface>

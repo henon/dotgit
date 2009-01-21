@@ -10,7 +10,7 @@ using System.ComponentModel;
 namespace dotGit.Config
 {
   /// <summary>
-  /// Configuration class to represent global and repository scoped Git settings. Parts of this code where derived from the 
+  /// Configuration class to represent global and repository scoped Git settings. Parts of this code were derived from the 
   /// INI file handler described here : http://www.codeproject.com/KB/files/TA_INIDocument_cs.aspx
   /// 
   /// Global configuration is read/saved on demand. Repository configuration is loaded by instantiating this class and only saved after calling Save() for now.
