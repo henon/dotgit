@@ -15,8 +15,8 @@ namespace dotGit.Objects.Storage
   public class PackV2 : Pack
   {
     private MemoryMappedFile _map;
-    private int length;
-
+    private long _packFileLength;
+    
 
     #region Constructors / Destructor
 
@@ -76,8 +76,9 @@ namespace dotGit.Objects.Storage
 
       // determine file size and create a memory map from the Pack file.
       FileInfo info = new FileInfo(PackFilePath);
+      _packFileLength = info.Length;
 
-      _map = MemoryMappedFile.Create(PackFilePath, MapProtection.PageReadOnly, info.Length, name);
+      _map = MemoryMappedFile.Create(PackFilePath, MapProtection.PageReadOnly, _packFileLength, name);
 
     }
 
@@ -91,7 +92,7 @@ namespace dotGit.Objects.Storage
         {
           long packFileOffset = Index.GetPackFileOffset(new Sha(sha));
 
-          using (GitObjectReader reader = new GitObjectReader(_map.MapView(MapAccess.FileMapRead, 0, length)))
+          using (GitObjectReader reader = new GitObjectReader(_map.MapView(MapAccess.FileMapRead, 0, (int)_packFileLength)))
           {
             reader.Position = packFileOffset;
             PackObject obj = Pack.GetObjectWithOffset(reader);
