@@ -14,7 +14,13 @@ namespace dotGit
   /// </summary>
 	public class Contributer
   {
-    
+
+    #region Fields
+
+    private static List<Contributer> _contributerCache;
+
+    #endregion Fields
+
     #region Constructors
 
     private Contributer()
@@ -48,7 +54,17 @@ namespace dotGit
         name = input.Substring(0,index-1).Trim();
         email = input.Substring(index).Trim(' ','>','<');
       }
-			return new Contributer(name, email);
+
+      Contributer con = ContributerCache.SingleOrDefault(c => c.Email == email && c.Name == name);
+
+      if (con != null)
+        return con;
+      else
+      {
+        con = new Contributer(name, email);
+        ContributerCache.Add(con);
+        return con;
+      }
 		}
 
 		/// <summary>
@@ -77,5 +93,18 @@ namespace dotGit
 			get;
 			private set;
 		}
-	}
+
+    private static List<Contributer> ContributerCache
+    {
+      get
+      {
+        if (_contributerCache == null)
+          _contributerCache = new List<Contributer>();
+
+        return _contributerCache;
+
+      }
+    }
+    
+   }
 }
