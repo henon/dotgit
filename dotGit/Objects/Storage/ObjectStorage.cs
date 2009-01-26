@@ -68,7 +68,6 @@ namespace dotGit.Objects.Storage
       if (!Utility.SHAExpression.IsMatch(sha))
         throw new ArgumentException("Need a valid sha", "sha");
 
-
       string looseObjectPath = Path.Combine(ObjectsDir, Path.Combine(sha.Substring(0, 2), sha.Substring(2)));
       // First check if object is stored in loose format
       if (File.Exists(looseObjectPath))

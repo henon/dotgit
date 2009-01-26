@@ -75,7 +75,6 @@ namespace dotGit.Index
 			private set;
     }
 
-
     #endregion
   }
 

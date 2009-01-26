@@ -8,16 +8,19 @@ using dotGit.Generic;
 
 namespace dotGit.Objects.Storage
 {
-  public class PackIndexV2
+  internal class PackIndexV2 : IEnumerable<PackIndexEntry>
   {
     private static readonly string MAGIC_NUMBER = Encoding.ASCII.GetString(new byte[] { 255, 116, 79, 99 });
 
     private static readonly int FANOUT = 256;
 
-    private int[] fanout;
-    private int[][] shas;
-    private byte[][] crcs;
-    private byte[][] offsets;
+    protected int[] fanout;
+    protected int[][] shas;
+    protected byte[][] crcs;
+    protected byte[][] offsets;
+
+
+
 
 
     internal PackIndexV2(string path)
@@ -49,17 +52,27 @@ namespace dotGit.Objects.Storage
     #endregion
 
 
-    public static int decodeInt32(byte[] intbuf, int offset)
+
+    public PackIndexEntry GetEntry(int index)
     {
-      int r = intbuf[offset] << 8;
+      int levelOne = Array.BinarySearch(fanout, index+1);
+      int level;
+      if( levelOne >= 0 )
+      {
+        level = fanout[levelOne];
+        while(levelOne > 0 && level == fanout[levelOne-1])
+          levelOne--;
+      }
+      else{
+        levelOne = -(levelOne+1);
+      }
 
-      r |= intbuf[offset + 1] & 0xff;
-      r <<= 8;
+      level = levelOne > 0 ? fanout[levelOne-1] : 0;
+      int position = index - level;
 
-      r |= intbuf[offset + 2] & 0xff;
-      return (r << 8) | (intbuf[offset + 3] & 0xff);
+      return new PackIndexEntry(shas[levelOne], (position << 2) + position);
+    
     }
-
 
     private void Load()
     {
@@ -153,8 +166,6 @@ namespace dotGit.Objects.Storage
 
         // TODO: Support 64 bit tables
 
-
-
         string packChecksum = reader.ReadBytes(20).GetString();
         string idxChecksum = reader.ReadBytes(20).GetString();
 
@@ -188,19 +199,171 @@ namespace dotGit.Objects.Storage
 
       return -1;
     }
-   
 
 
+    /// <summary>
+    /// returns the byte offset in the pack index of the given Sha object
+    /// </summary>
+    /// <param name="sha"></param>
+    /// <returns>offset (int)</returns>
     public int GetPackFileOffset(Sha sha)
     {
       int levelTwo = SearchLevelTwo(sha, sha.FirstByte);
 
-
-			if (levelTwo == -1)
-				throw new ObjectNotFoundException(sha.SHAString);
+      if (levelTwo == -1)
+        return -1;
 
       return System.Net.IPAddress.HostToNetworkOrder(BitConverter.ToInt32(offsets[sha.FirstByte], levelTwo << 2));
     }
 
+
+    #region Methods
+
+    /// <summary>
+    /// Returns true/false indicating if the given Sha is present in the PackIndexEntry collection of this Repository
+    /// </summary>
+    /// <param name="sha"></param>
+    /// <returns>boolean</returns>
+    public bool Contains(Sha sha)
+    {
+      return (GetPackFileOffset(sha) != -1);
+    }
+
+    #endregion
+
+
+    #region IEnumerable<PackIndexEntry> Members
+
+    public IEnumerator<PackIndexEntry> GetEnumerator()
+    {
+
+      return new PackIndexEntryEnumerator(this);
+    }
+
+    #endregion
+
+    #region IEnumerable Members
+
+    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+    {
+      return new PackIndexEntryEnumerator(this);
+    }
+
+    #endregion
+
+
+
+
+    public class PackIndexEntryEnumerator : IEnumerator<PackIndexEntry>
+    {
+
+
+      private PackIndexEntry _entry = null;
+      private int returnedEntries = 0;
+
+      private int levelOne = 0;
+      private int levelTwo = 0;
+
+      private PackIndexV2 _index;
+
+      public PackIndexEntryEnumerator(PackIndexV2 index)
+      {
+        _index = index;
+      }
+
+
+      #region IEnumerator<PackIndexEntry> Members
+
+      public PackIndexEntry Current
+      {
+        get { return _entry; }
+      }
+
+      #endregion
+
+      #region IDisposable Members
+
+      public void Dispose()
+      {
+        _entry = null;
+      }
+
+      #endregion
+
+      #region IEnumerator Members
+
+      object System.Collections.IEnumerator.Current
+      {
+        get { return _entry; }
+      }
+
+      public bool MoveNext()
+      {
+        bool result = false;
+        for (; levelOne < _index.shas.Length; levelOne++)
+        {
+          if (levelTwo < _index.shas[levelOne].Length)
+          {
+            
+            _entry = new PackIndexEntry(_index.shas[levelOne],levelTwo);
+          
+            int arrayIndex = levelTwo / (Sha.ShaByteLength / 4) * 4;
+
+            int offs = System.Net.IPAddress.HostToNetworkOrder(BitConverter.ToInt32(_index.offsets[levelOne], arrayIndex));
+            
+            _entry.Offset = offs;
+            levelTwo += Sha.ShaByteLength / 4;
+            returnedEntries++;
+            result = true;
+            break;
+          }
+          else
+          {
+            levelTwo = 0;
+          }
+        }
+        return result;
+      }
+
+      public void Reset()
+      {
+        _entry = null;
+
+        returnedEntries = 0;
+        levelTwo = 0;
+        levelOne = 0;
+      }
+
+      #endregion
+    }
+
+  }
+
+
+
+
+  public class PackIndexEntry : Sha
+  {
+
+    public PackIndexEntry(string sha)
+      : base(sha)
+    {
+    }
+
+    public PackIndexEntry(int[] words)
+      : base(words)
+    {
+    }
+
+    public PackIndexEntry(int[] input, int position)
+      : base(input, position)
+    {
+    }
+
+    public int Offset
+    {
+      get;
+      internal set;
+    }
   }
 }
