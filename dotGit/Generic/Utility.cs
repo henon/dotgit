@@ -222,21 +222,19 @@ namespace dotGit.Objects
     public static DateTime StripDate(string input, out string remainder)
     {
 
-      Match match = DateTimeRegex.Match(input);
-      if (match.Success)
+      // The original regex in this function was stripped for performance reasons. 
+      // For now we assume that the input is in a somewhat proper format (read from pack file)
+      input = input.Trim();
+
+      string capture = input.Substring(input.Length - 16, 16);
+      remainder = input.Substring(0, input.Length - 16).Trim();
+
+      int timeZoneIndex = capture.IndexOfAny(new char[] { '+', '-' });
+      if (timeZoneIndex >= 0)
       {
-        string capture = match.Captures[0].Value;
-
-
-
-        int timeZoneIndex = capture.IndexOfAny(new char[] { '+', '-' });
-        if (timeZoneIndex >= 0)
-        {
-          remainder = input.Substring(0, match.Index);
-          return UnixEPOCH.AddSeconds(long.Parse(capture.Substring(0, timeZoneIndex))).AddHours(System.Int32.Parse(capture.Substring(timeZoneIndex)) / 100);
-        }
+        return UnixEPOCH.AddSeconds(long.Parse(capture.Substring(0, timeZoneIndex))).AddHours(System.Int32.Parse(capture.Substring(timeZoneIndex)) / 100);
       }
-      remainder = input;
+
       return DateTime.MinValue;
 
     }
