@@ -144,12 +144,12 @@ namespace dotGit.Objects
     {
       //Skip 'tree' at beginning of line and read tree sha
       input.ReadWord();
-      _treeSha = input.ReadLine().GetString();
+      _treeSha = input.ReadLine();
 
 
       // Check for 'parent' at beginning of line
       _parentShas = new List<string>();
-      string parentOrAuthor = input.ReadWord().GetString();
+      string parentOrAuthor = input.ReadWord();
 
       while (parentOrAuthor == "parent")
       {
@@ -157,17 +157,17 @@ namespace dotGit.Objects
         input.Position++;
 
         // Skip 'author'
-        parentOrAuthor = input.ReadWord().GetString();
+        parentOrAuthor = input.ReadWord();
       }
 
       // Author
-      string authorLine = input.ReadLine().GetString();
+      string authorLine = input.ReadLine();
       AuthoredDate = Utility.StripDate(authorLine, out authorLine);
       Author = Contributer.Parse(authorLine);
 
       // Committer
       input.ReadWord();
-      string committerLine = input.ReadLine().GetString();
+      string committerLine = input.ReadLine();
       CommittedDate = Utility.StripDate(committerLine, out committerLine);
       Committer = Contributer.Parse(committerLine);
 

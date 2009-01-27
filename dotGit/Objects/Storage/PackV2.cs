@@ -6,7 +6,6 @@ using System.IO;
 using dotGit.Exceptions;
 using dotGit.Generic;
 using dotGit.Objects.Storage.PackObjects;
-using System.Diagnostics;
 using Winterdom.IO.FileMap;
 
 
@@ -16,7 +15,7 @@ namespace dotGit.Objects.Storage
   {
     private MemoryMappedFile _map;
     private long _packFileLength;
-    
+    private Win32.SYSTEM_INFO _systemInfo;
 
     #region Constructors / Destructor
 
@@ -24,9 +23,17 @@ namespace dotGit.Objects.Storage
       : base(repo, path)
     {
       Index = new PackIndexV2(IndexFilePath);
+
+      ReverseIndex = new PackReverseIndexV2(Index);
+
       Pack = new PackFileV2(Repo, PackFilePath);
 
+      _systemInfo = new Win32.SYSTEM_INFO();
+      Win32.GetSystemInfo(ref _systemInfo);
+
       MapPackFile();
+
+
     }
 
     ~PackV2()
@@ -61,6 +68,12 @@ namespace dotGit.Objects.Storage
       set;
     }
 
+    private PackReverseIndexV2 ReverseIndex
+    {
+      get;
+      set;
+    }
+
     private PackFileV2 Pack
     {
       get;
@@ -82,20 +95,36 @@ namespace dotGit.Objects.Storage
 
     }
 
+
+    private Stream GetPackStream(int packFileOffset, int length, ref int viewOffset)
+    {
+      
+      int dwFileMapStart = (packFileOffset / (int)_systemInfo.dwAllocationGranularity) * (int)_systemInfo.dwAllocationGranularity;
+      int dwMapViewSize = (packFileOffset % (int)_systemInfo.dwAllocationGranularity) + length;
+      int dwFileMapSize = packFileOffset + length;
+       viewOffset = packFileOffset - dwFileMapStart;
+      return _map.MapView(MapAccess.FileMapRead, dwFileMapStart, dwMapViewSize);
+
+    }
+
     public override IStorableObject GetObject(string sha)
     {
-      Debug.WriteLine("Fetching object with sha: {0}".FormatWith(sha));
+      System.Diagnostics.Debug.WriteLine("Fetching object with sha: {0}".FormatWith(sha));
 
       try
       {
         if (Index != null)
         {
-          long packFileOffset = Index.GetPackFileOffset(new Sha(sha));
+          int packFileOffset = Index.GetPackFileOffset(new Sha(sha));
 
-          using (GitObjectReader reader = new GitObjectReader(_map.MapView(MapAccess.FileMapRead, 0, (int)_packFileLength)))
+          int nextOffset = ReverseIndex.GetNextOffset(packFileOffset, (int)_packFileLength);
+
+          int viewOffset =0;
+
+          using (GitObjectReader reader = new GitObjectReader(GetPackStream(packFileOffset,nextOffset-packFileOffset, ref viewOffset)))
           {
-            reader.Position = packFileOffset;
-            PackObject obj = Pack.GetObjectWithOffset(reader);
+            reader.Position = viewOffset;
+            PackObject obj = Pack.GetObjectWithOffset(reader, nextOffset - packFileOffset);
 
             if (obj is Undeltified)
             {
@@ -122,11 +151,17 @@ namespace dotGit.Objects.Storage
                   packFileOffset -= ((OFSDelta)obj).BackwardsBaseOffset;
                 }
 
-                // Set stream offset to new object's offset
-                reader.Position = packFileOffset;
 
-                // Fetch next object
-                obj = Pack.GetObjectWithOffset(reader);
+                nextOffset = ReverseIndex.GetNextOffset(packFileOffset, (int)_packFileLength);
+
+                using (GitObjectReader deltaReader = new GitObjectReader(GetPackStream(packFileOffset, nextOffset - packFileOffset, ref viewOffset)))
+                {
+
+                  // Set stream offset to new object's offset
+                  deltaReader.Position = viewOffset;
+                  // Fetch next object
+                  obj = Pack.GetObjectWithOffset(deltaReader, nextOffset-packFileOffset);
+                }
 
                 // Collect delta
                 if (obj is Deltified)

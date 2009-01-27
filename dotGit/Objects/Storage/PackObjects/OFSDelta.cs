@@ -18,7 +18,7 @@ namespace dotGit.Objects.Storage.PackObjects
       protected set;
     }
 
-    public long BackwardsBaseOffset
+    public int BackwardsBaseOffset
     {
       get;
       private set;
@@ -40,10 +40,9 @@ namespace dotGit.Objects.Storage.PackObjects
         baseOffset |= ((long)buffer & 0x7f);
 
       }
+      Delta = Zlib.Decompress(reader.ReadToEnd());
 
-      Delta = reader.UncompressToLength(Size).ToArray();
-
-      BackwardsBaseOffset = baseOffset;
+      BackwardsBaseOffset = (int)baseOffset;
     }
   }
 }

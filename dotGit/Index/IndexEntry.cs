@@ -32,7 +32,7 @@ namespace dotGit.Index
 			var updateNeeded = flags[0].GetBits(1, 1);
 			Stage = (IndexStage)flags[0].GetBits(2, 2);
 			
-			Path = source.ReadToNull().GetString();
+			Path = source.ReadToNull();
 			
 			string rest = source.ReadToNextNonNull().GetString();
     }

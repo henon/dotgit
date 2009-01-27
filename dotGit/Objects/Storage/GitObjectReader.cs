@@ -49,23 +49,46 @@ namespace dotGit.Objects.Storage
     /// </summary>
     /// <param name="stop">Character to stop reading at</param>
     /// <param name="consume">boolean value indicating if we want to reset the position in the stream after reading</param>
-    /// <returns>byte[]</returns>
-    public byte[] ReadToChar(char stop, bool consume)
+    /// <returns>string</returns>
+    public string ReadToChar(char stop, bool consume)
     {
-      using (MemoryStream ms = new MemoryStream())
+
+      // [Skinny] This version of ReadToChar actually performs better as reading one byte at a time but needs more testing
+
+      long position = BaseStream.Position;
+      int bufLength = 4;
+
+      StringBuilder sb = new StringBuilder();
+      byte[] b = new byte[bufLength];
+      bool found = false;
+      int index = -1;
+
+      while (!found)
       {
-        byte buffer;
-
-        while ((buffer = ReadByte()) != stop)
+        b = ReadBytes(bufLength);
+        for (int idx = 0; idx < bufLength; idx++)
         {
-          ms.WriteByte(buffer);
+          if (b[idx] == (byte)stop)
+          {
+            index = idx;
+            found = true;
+            break;
+          }
+          else
+          {
+            sb.Append((char)b[idx]);
+          }
         }
-
-        if (!consume)
-          BaseStream.Position--;
-
-        return ms.ToArray();
       }
+
+      string s = sb.ToString();
+
+      if (!consume)
+        BaseStream.Position = position;
+      else
+        BaseStream.Position -= (bufLength - (index + 1));
+      return s;
+
     }
 
     /// <summary>
@@ -82,26 +105,21 @@ namespace dotGit.Objects.Storage
     /// Reads bytes from the stream until a space character is found. The bytes read are returned from this function.
     /// </summary>
     /// <returns></returns>
-    public byte[] ReadWord()
+    public string ReadWord()
     {
       return ReadToChar(' ', true);
-    }
-
-    public byte[] ReadWord(bool consumeSpace)
-    {
-      return ReadToChar(' ', consumeSpace);
     }
 
     /// <summary>
     /// Reads bytes from the stream until a newline character (\n) is found. The newline is skipped.
     /// </summary>
     /// <returns></returns>
-    public byte[] ReadLine()
+    public string ReadLine()
     {
       return ReadToChar('\n', true);
     }
 
-    public byte[] ReadToNull()
+    public string ReadToNull()
     {
       return ReadToChar('\0', true);
     }
@@ -123,7 +141,7 @@ namespace dotGit.Objects.Storage
 
       long length = 0;
 
-      string typeString = ReadWord().GetString();
+      string typeString = ReadWord();
       switch (typeString)
       {
         case "blob":

@@ -130,7 +130,7 @@ namespace dotGit.Refs
         // Skip object keyword
         input.ReadWord();
 
-        TaggedObjectSHA = input.ReadLine().GetString().Trim();
+        TaggedObjectSHA = input.ReadLine().Trim();
         if (!Utility.IsValidSHA(TaggedObjectSHA))
           throw new ParseException("Invalid sha from tag content");
 
@@ -142,7 +142,7 @@ namespace dotGit.Refs
 
         // Tagger
         input.ReadWord();
-        string taggerLine = input.ReadLine().GetString();
+        string taggerLine = input.ReadLine();
         TagDate = Utility.StripDate(taggerLine, out taggerLine);
         Tagger = Contributer.Parse(taggerLine);
 

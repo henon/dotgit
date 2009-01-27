@@ -29,7 +29,7 @@ namespace dotGit.Objects.Storage.PackObjects
       byte[] shaContents = reader.ReadBytes(20);
       
       BaseSHA = Sha.Decode(shaContents);
-      Delta = reader.UncompressToLength(Size).ToArray();
+      Delta = Zlib.Decompress(reader.ReadToEnd());
     }
 	}
 }

@@ -32,10 +32,6 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ICSharpCode.SharpZipLib, Version=0.85.5.452, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Lib\ICSharpCode.SharpZipLib.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core">
@@ -80,8 +76,10 @@
     <Compile Include="Objects\Storage\PackObjects\Deltified.cs" />
     <Compile Include="Objects\Storage\PackObjects\OFSDelta.cs" />
     <Compile Include="Objects\Storage\PackIndexV2.cs" />
+    <Compile Include="Objects\Storage\PackReverseIndexV2.cs" />
     <Compile Include="Objects\Storage\PackV2.cs" />
     <Compile Include="Objects\Storage\PackFileV2.cs" />
+    <Compile Include="Objects\Storage\Win32.cs" />
     <Compile Include="Objects\TreeNodeCollection.cs" />
     <Compile Include="Objects\Storage\PackObjects\REFDelta.cs" />
     <Compile Include="Objects\Storage\IStorableObject.cs" />
@@ -106,6 +104,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

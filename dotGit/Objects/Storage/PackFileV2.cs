@@ -32,7 +32,7 @@ namespace dotGit.Objects.Storage
       throw new NotImplementedException();
     }
 
-    public PackObject GetObjectWithOffset(GitObjectReader reader)
+    public PackObject GetObjectWithOffset(GitObjectReader reader, int uncompressedSize)
     {
       Debug.WriteLine("Fetching object with offset: {0}".FormatWith(reader.Position));
 
@@ -61,10 +61,13 @@ namespace dotGit.Objects.Storage
       }
       else
       {
-        using (MemoryStream inflated = reader.UncompressToLength(size))
+        return new Undeltified(size, type, Zlib.Decompress(reader.ReadBytes(uncompressedSize)));
+
+        /*using (MemoryStream inflated = reader.UncompressToLength(size))
         {
           return new Undeltified(size, type, inflated.ToArray());
         }
+         * */
       }
     }
 

@@ -67,11 +67,11 @@ namespace dotGit.Objects
 						string path, sha;
 
             // TODO: Make this a little bit less sucky
-            string m = stream.ReadWord().GetString();
+            string m = stream.ReadWord();
 
 						FileMode mode = FileMode.FromBits(int.Parse(m));
 
-						path = stream.ReadToNull().GetString();
+            path = stream.ReadToNull();
 						sha = Sha.Decode(stream.ReadBytes(20));
 
             // TODO: Add support for submodules
