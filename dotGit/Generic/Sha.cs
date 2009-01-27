@@ -17,25 +17,23 @@ namespace dotGit.Generic
     public static readonly int ShaByteLength = 20;
     public static readonly int ShaStringLength = 40;
 
-    public int[] _words = new int[5];
+    #region Fields
 
-    private string MakeHexString()
-    {
-      byte[] b = new byte[ShaByteLength];
+    private static readonly char[] hexStringCharacters = { '0', '1', '2', '3', '4', '5', '6',
+			'7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
 
-      Buffer.BlockCopy(BitConverter.GetBytes(System.Net.IPAddress.NetworkToHostOrder(_words[0])), 0, b, 0, 4);
-      Buffer.BlockCopy(BitConverter.GetBytes(System.Net.IPAddress.NetworkToHostOrder(_words[1])), 0, b, 4, 4);
-      Buffer.BlockCopy(BitConverter.GetBytes(System.Net.IPAddress.NetworkToHostOrder(_words[2])), 0, b, 8, 4);
-      Buffer.BlockCopy(BitConverter.GetBytes(System.Net.IPAddress.NetworkToHostOrder(_words[3])), 0, b, 12, 4);
-      Buffer.BlockCopy(BitConverter.GetBytes(System.Net.IPAddress.NetworkToHostOrder(_words[4])), 0, b, 16, 4);
+    private int[] _words = new int[5];
 
-      return Decode(b);
-    }
+    #endregion
+
+    #region Public Methods
 
     public static string Decode(byte[] sha)
     {
       return BitConverter.ToString(sha).Replace("-", "").ToLower();
     }
+
+    #endregion
 
     #region Constructors
 
@@ -98,6 +96,10 @@ namespace dotGit.Generic
 
     #region System Overrides
 
+    public override int GetHashCode()
+    {
+      return SHAString.GetHashCode();
+    }
     public override string ToString()
     {
       return SHAString;
@@ -157,6 +159,39 @@ namespace dotGit.Generic
 
       return data;
     }
+
+
+    /// <summary>
+    /// Returns a string representation of a Sha stored in _words. This should be faster as the default .NET String convert functions.
+    /// </summary>
+    /// <returns>string</returns>
+    private string MakeHexString()
+    {
+
+      char[] b = new char[ShaStringLength];
+
+      formatHexChar(ref b, 0, _words[0]);
+      formatHexChar(ref b, 8, _words[1]);
+      formatHexChar(ref b, 16, _words[2]);
+      formatHexChar(ref b, 24, _words[3]);
+      formatHexChar(ref b, 32, _words[4]);
+
+      return new string(b);
+
+    }
+
+    private static void formatHexChar(ref char[] dst, int p, int w)
+    {
+      int o = p + 7;
+      while (o >= p && w != 0)
+      {
+        dst[o--] = hexStringCharacters[w & 0xf];
+        w >>= 4;
+      }
+      while (o >= p)
+        dst[o--] = '0';
+    }
+
 
     #endregion
   }
