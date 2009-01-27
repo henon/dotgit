@@ -17,7 +17,7 @@ namespace dotGit
 
     #region Fields
 
-    private static List<Contributer> _contributerCache;
+    private static Dictionary<string, Contributer> _contributerCache = new Dictionary<string, Contributer>();
 
     #endregion Fields
 
@@ -55,16 +55,15 @@ namespace dotGit
         email = input.Substring(index).Trim(' ','>','<');
       }
 
-      Contributer con = ContributerCache.SingleOrDefault(c => c.Email == email && c.Name == name);
-
-      if (con != null)
-        return con;
-      else
+      if (!ContributerCache.Keys.Contains(input))
       {
-        con = new Contributer(name, email);
-        ContributerCache.Add(con);
+        Contributer con = new Contributer(name, email);
+        ContributerCache.Add(input, con);
         return con;
       }
+      else
+        return ContributerCache[input];
+      
 		}
 
 		/// <summary>
@@ -94,15 +93,11 @@ namespace dotGit
 			private set;
 		}
 
-    private static List<Contributer> ContributerCache
+    private static Dictionary<string, Contributer> ContributerCache
     {
       get
       {
-        if (_contributerCache == null)
-          _contributerCache = new List<Contributer>();
-
         return _contributerCache;
-
       }
     }
     
