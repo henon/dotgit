@@ -63,10 +63,11 @@ namespace dotGit.Objects.Storage
     {
       foreach( string dir in Directory.GetDirectories(path))
       {
-        foreach (string file in Directory.GetFiles(path, pattern))
+        foreach (string file in Directory.GetFiles(Path.Combine(path,dir), pattern))
         {
-          if (!filesFound.Contains(file))
-            filesFound.Add(file);
+          string sha = file.Replace(ObjectsDir, "").Replace("\\", String.Empty);
+          if (!filesFound.Contains(sha))
+            filesFound.Add(sha);
         }
         GetFiles(dir, pattern, ref filesFound);
       }

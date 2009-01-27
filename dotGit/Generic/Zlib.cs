@@ -24,14 +24,16 @@ namespace dotGit.Objects
       MemoryStream output = new MemoryStream();
       using (FileStream fs = new FileStream(path, System.IO.FileMode.Open, FileAccess.Read, FileShare.Read, 8192))
       {
+        // MS, dare to be different ;-)
+        // Skip the first two bytes, see : http://connect.microsoft.com/VisualStudio/feedback/ViewFeedback.aspx?FeedbackID=97064
+        fs.ReadByte();
+        fs.ReadByte();
+
         using (System.IO.Compression.DeflateStream inflaterStream = new System.IO.Compression.DeflateStream(fs, System.IO.Compression.CompressionMode.Decompress, false))
         {
           while ((size = inflaterStream.Read(buffer, 0, buffer.Length)) > 0)
             output.Write(buffer, 0, size);
-
         }
-
-
       }
       return output;
     }
@@ -48,10 +50,8 @@ namespace dotGit.Objects
 
       using (MemoryStream outputStream = new MemoryStream())
       {
-
         using (MemoryStream inputStream = new MemoryStream(input))
         {
-
           // MS, dare to be different ;-)
           // Skip the first two bytes, see : http://connect.microsoft.com/VisualStudio/feedback/ViewFeedback.aspx?FeedbackID=97064
           inputStream.ReadByte();
