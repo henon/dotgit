@@ -33,6 +33,10 @@ namespace dotGit.Generic
       return BitConverter.ToString(sha).Replace("-", "").ToLower();
     }
 
+    public static bool IsValidSha(string sha)
+    {
+      return Utility.SHAExpression.IsMatch(sha);
+    }
     #endregion
 
     #region Constructors
@@ -194,5 +198,7 @@ namespace dotGit.Generic
 
 
     #endregion
+
+ 
   }
 }
