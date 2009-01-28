@@ -10,8 +10,8 @@ namespace dotGit.Objects
 {
   public class Utility
   {
-    public static readonly Regex SHAExpression = new Regex(@"^([a-f]|\d){40}\Z", RegexOptions.Compiled);
-    public static readonly Regex DateTimeRegex = new Regex(@"\s(\d)+(\s(\+|-)(\d){4})?\Z", RegexOptions.Compiled);
+    public static readonly Regex SHAExpression = new Regex(@"^([a-f]|\d){40}$", RegexOptions.Compiled | RegexOptions.Singleline);
+    //public static readonly Regex DateTimeRegex = new Regex(@"\s(\d)+(\s(\+|-)(\d){4})?\Z", RegexOptions.Compiled);
     public static readonly DateTime UnixEPOCH = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
     /// <summary>
