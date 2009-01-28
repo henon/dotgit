@@ -61,13 +61,7 @@ namespace dotGit.Objects.Storage
       }
       else
       {
-        return new Undeltified(size, type, Zlib.Decompress(reader.ReadBytes(uncompressedSize)));
-
-        /*using (MemoryStream inflated = reader.UncompressToLength(size))
-        {
-          return new Undeltified(size, type, inflated.ToArray());
-        }
-         * */
+        return new Undeltified(size, type, Zlib.Decompress(reader.ReadToEnd()));
       }
     }
 
