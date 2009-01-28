@@ -1,59 +1,72 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using dotGit;
-using System.IO;
 using dotGit.Objects;
-using System.Security.Cryptography;
-using System.Globalization;
-using dotGit.Objects.Storage;
-using dotGit.Refs;
-using dotGit.Index;
+
 
 namespace TestConsole
 {
   class Program
   {
+    #region History Builder (Example)
+
+    static Dictionary<string,Commit> _seen = new Dictionary<string,Commit>(5000);
+    static Queue<Commit> _pending = new Queue<Commit>();
+    
+    private static void BuildHistory()
+    {
+
+      while (_pending.Count > 0)
+      {
+        Commit entry = _pending.Dequeue();
+        if (!_seen.Keys.Contains(entry.SHA))
+        {
+          _seen.Add(entry.SHA,  entry);
+        
+          if (entry.HasParents)
+          {
+             for (int idx = entry.Parents.Count - 1; idx >= 0; idx--)
+              {
+                _pending.Enqueue(entry.Parents[idx]);
+              }
+          }
+        }
+      }
+    }
+
+    #endregion
+
+    private static string RepositoryPath = @"f:\code\dotGit\";
+
+    /// <summary>
+    /// This example program opens a Git repository (specify the path above in the RepositoryPath variable) and reads the complete
+    /// history (all objects) from the pack file by using the BuildHistory() function.
+    /// </summary>
+    /// <param name="args"></param>
+    /// 
     static void Main(string[] args)
     {
-      Repository repo = Repository.Open(@"F:\code\dotgit");
+      Repository repo = Repository.Open(RepositoryPath);
+
       Console.WriteLine(repo.Storage);
       
+      DateTime start = DateTime.Now;
+      Console.WriteLine("Start building traversing history @ {0}", DateTime.Now);
 
-      WalkTree(repo.HEAD.Commit.Tree, 0);
+      _pending.Enqueue(repo.HEAD.Branch.Commit);
+      BuildHistory();
 
+      Console.WriteLine("Traversed history in {0} seconds", (DateTime.Now - start).TotalSeconds);
 
-
-      //dotGit.Objects.Storage.Pack.LoadPack(System.IO.Path.Combine(repo.GitDir.FullName, "objects\\pack\\pack-209b24047b294e1d9a97680d62a5b9e1d4bef33c"));
-
-      //Tag firstTag = repo.Tags["0.1-alpha"];
-      //Branch master = repo.Branches["master"];
-      Console.WriteLine(repo.HEAD.Commit.Tree.Children);
-
-      //IStorableObject obj = repo.Storage.GetObject("bf6ae5d04bcd11d035be3654973ff5339d3f4e1b");
-
-      //Index idx = repo.Index;
-
-      //TreeNodeCollection nodes = repo.HEAD.Commit.Tree.Children;
-
-      //Commit obj = repo.Storage.GetObject<Commit>("5202e973f3d38c583b1a4645d23a638acc012c41");
-      //Blob b = repo.Storage.GetObject<Blob>("58d11b659b2c71a0cbdc0d037e237243cfec8a88");
-
-      //IStorableObject o = repo.Storage.GetObject("54040746289fd8beff929bcdcdd2b33be8a3700b");
-
-      //foreach (Tag tag in repo.Tags)
-      //{
-      //				Console.WriteLine(String.Format("Tag: '{0}' points to {1}", tag.Name, tag.SHA));
-      //}
-
-
+#if DEBUG
       Console.ReadLine();
-
-
-
+#endif
 
     }
+
+    #region More Examples 
+
     private static void WalkTree(Tree tree, int level)
     {
       Console.WriteLine(new String('-', level) + tree.Path);
@@ -65,7 +78,9 @@ namespace TestConsole
           WalkTree((Tree)n, level++);
       }
     }
+
+    #endregion
+
   }
-
-
 }
+
