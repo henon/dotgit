@@ -25,6 +25,7 @@ namespace Test
     }
 
     [Test]
+    [Category("Diff Engine")]
     public void DiffEngineShouldDetectBasicChangesInTwoFiles()
     {
       Diff d = Diff.Compare(sourceFile1, sourceFile2);
@@ -32,6 +33,7 @@ namespace Test
 
     [Test]
     [ExpectedException(ExceptionType=typeof(FileNotFoundException), UserMessage="Non existent files should throw a FileNotFoundException")]
+    [Category("Diff Engine")]
     public void DiffEngineShouldThrowExceptionOnNonExistentFiles()
     {
       string file1 = String.Format("{0}.txt", Guid.NewGuid().ToString());

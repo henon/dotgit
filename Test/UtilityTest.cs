@@ -106,7 +106,6 @@ namespace Test
       Assert.IsTrue(Utility.IsValidSHA("945ec04f178784065ffc4ed494f1f0a81af7b891"), "Valid SHA strings should return true");
     }
 
-
     [Test]
     public void StripDateShouldReturnMinDateForEmptyString()
     {
@@ -131,6 +130,15 @@ namespace Test
       string remainder = String.Empty;
       Utility.StripDate(stripDateInput, out remainder);
       Assert.IsTrue(String.Equals("Mark <sjonge@hotmail.com>", remainder), "Remainder should return valid information for a valid input string");
+    }
+
+    [Test]
+    public void StripDateRemainderShouldReturnInputForBogusLine()
+    {
+      string input = "12345";
+      string remainder = String.Empty;
+      Utility.StripDate(input, out remainder);
+      Assert.IsTrue(String.Equals(input, remainder), "Remainder should return input for short bogus string");
     }
 
     [Test]

@@ -40,6 +40,7 @@ namespace Test
 
     #region Test Basic Scenarios
     [Test]
+    [Category("Git Configuration")]
     public void InitializeConfigShouldReturnFreshConfiguration()
     {
       if (File.Exists(newConfigFilePath))
@@ -52,6 +53,7 @@ namespace Test
     }
 
     [Test]
+    [Category("Git Configuration")]
     public void InitializeConfigWithPathParameterShouldReturnNewFile()
     {
       if (File.Exists(newConfigFilePath))
@@ -71,15 +73,15 @@ namespace Test
       Configuration config2 = Configuration.Create(path);
     }
 
-
-
     [Test]
+    [Category("Git Configuration")]
     public void ReadConfiguration()
     {
       Assert.IsNotNull(config, "Configuration cannot be null after reading it");
     }
 
     [Test]
+    [Category("Git Configuration")]
     public void ReloadConfigurationShouldReturnOldValues()
     {
       Configuration config2 = Configuration.Load(path);
@@ -100,18 +102,21 @@ namespace Test
     #region Getting / Setting
 
     [Test]
+    [Category("Git Configuration")]
     public void ConfigUserNameShouldBeTest()
     {
       Assert.IsTrue(String.Equals(config.GetValue<string>(ConfigSections.User, ConfigKeys.Name), "Test"), "Username configuration in repository should be 'Test'");
     }
 
     [Test]
+    [Category("Git Configuration")]
     public void ConfigUserEmailShouldBeTestEmail()
     {
       Assert.IsTrue(String.Equals(config.GetValue<string>(ConfigSections.User, ConfigKeys.Email), "dotGitTest@test.com"), "User email should be test@test.com");
     }
 
     [Test]
+    [Category("Git Configuration")]
     public void ConfigUserEmailShouldBeSettable()
     {
 
@@ -124,6 +129,7 @@ namespace Test
     }
 
     [Test]
+    [Category("Git Configuration")]
     public void ConfigUserNameShouldBeSettable()
     {
       string initial = config.GetValue<string>(ConfigSections.User, ConfigKeys.Name);
@@ -134,6 +140,7 @@ namespace Test
     }
 
     [Test]
+    [Category("Git Configuration")]
     public void ConfigIgnoreCaseShouldBeSettable()
     {
       Configuration config2 = Configuration.Load(path);
@@ -145,6 +152,7 @@ namespace Test
     }
 
     [Test]
+    [Category("Git Configuration")]
     public void ConfigSymLinksShouldBeSettable()
     {
       Configuration config2 = Configuration.Load(path);
@@ -155,6 +163,7 @@ namespace Test
     }
 
     [Test]
+    [Category("Git Configuration")]
     public void OriginShouldBeTestRepositoryAtGitHub()
     {
       // We love GitHub ;)
@@ -169,6 +178,7 @@ namespace Test
     #region Test Repository
 
     [Test]
+    [Category("Git Configuration")]
     public void ConfigShouldBeNonEmptyForTestRepository()
     {
       Repository repo = Repository.Open(Global.TestRepositoryPath);
@@ -177,12 +187,14 @@ namespace Test
     }
 
     [Test]
+    [Category("Git Configuration")]
     public void ConfigShouldReturnOriginRemote()
     {
       Assert.IsFalse(String.IsNullOrEmpty(config.GetValue<string>(ConfigSections.Remote, "origin", ConfigKeys.Url)), "Test repository origin url cannot be null or empty");
     }
 
     [Test]
+    [Category("Git Configuration")]
     public void CoreSectionShouldContainStandardEntries()
     {
       Assert.IsNotNull(config.GetValue<bool>(ConfigSections.Core, ConfigKeys.Bare), "Config.Bare cannot be null");
@@ -216,6 +228,7 @@ namespace Test
 
 
     [Test]
+    [Category("Git Configuration")]
     public void SavingUserEmailChangeShouldPersistSettings()
     {
 
@@ -231,6 +244,7 @@ namespace Test
     }
 
     [Test]
+    [Category("Git Configuration")]
     public void AddingRemoteShouldPersist()
     {
 

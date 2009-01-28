@@ -12,6 +12,7 @@ namespace Test
   {
   
     [Test]
+    [Category("Repository Writing")]
     public void ObjectWriteShouldReturnTrue()
     {
       Assert.IsTrue(false, "Not Implemented Yet");
