@@ -56,7 +56,7 @@ namespace dotGit.Objects
           // Skip the first two bytes, see : http://connect.microsoft.com/VisualStudio/feedback/ViewFeedback.aspx?FeedbackID=97064
           inputStream.ReadByte();
           inputStream.ReadByte();
-
+          
           using (System.IO.Compression.DeflateStream inflaterStream = new System.IO.Compression.DeflateStream(inputStream, System.IO.Compression.CompressionMode.Decompress, false))
           {
             while ((size = inflaterStream.Read(buffer, 0, buffer.Length)) > 0)
