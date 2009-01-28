@@ -10,7 +10,7 @@ using dotGit.Objects.Storage;
 
 namespace dotGit.Index
 {
-  public class Index
+  public class Index : IEnumerable<IndexEntry>
   {
     private static readonly string HEADER = "DIRC";
     private static readonly int[] VERSIONS = new int[] { 2 };
@@ -82,5 +82,19 @@ namespace dotGit.Index
     {
       get { return !Entries.Any(e => e.Stage != IndexStage.Normal); }
     }
+
+    #region Enumerator
+
+    public IEnumerator<IndexEntry> GetEnumerator()
+    {
+      return Entries.GetEnumerator();
+    }
+
+    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+    {
+      return Entries.GetEnumerator();
+    }
+
+    #endregion
   }
 }
