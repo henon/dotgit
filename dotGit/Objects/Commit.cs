@@ -142,38 +142,65 @@ namespace dotGit.Objects
     /// <param name="input">A reader with inflated commit contents</param>
     public override void Deserialize(GitObjectReader input)
     {
-      //Skip 'tree' at beginning of line and read tree sha
-      input.ReadWord();
-      _treeSha = input.ReadLine();
 
+      // Get the contents from the stream to avoid ReadByte() every time
+      string contents = input.ReadToEnd().GetString();
 
-      // Check for 'parent' at beginning of line
+      int length = contents.Length;
+      int index = 0;
+
+      _treeSha = contents.Substring(index + 5, 40);
       _parentShas = new List<string>();
-      string parentOrAuthor = input.ReadWord();
 
-      while (parentOrAuthor == "parent")
+      index += 46; // "tree " + sha + \n
+      while (index + 48 < contents.Length && contents.Substring(index, 7).Equals("parent "))
       {
-        _parentShas.Add(input.GetString(40));
-        input.Position++;
-
-        // Skip 'author'
-        parentOrAuthor = input.ReadWord();
+        // got parent
+        _parentShas.Add(contents.Substring(index + 7, 40));
+        index += 48;
       }
 
-      // Author
-      string authorLine = input.ReadLine();
-      AuthoredDate = Utility.StripDate(authorLine, out authorLine);
-      Author = Contributer.Parse(authorLine);
+      // Check if we can get an author from the next characters
+      if (contents.Substring(index, 7) == "author ")
+      {
+        index += 7;
+        int authorLength = 0;
+        while (contents[index] != '\n')
+        {
+          authorLength++;
+          index++;
+        }
 
-      // Committer
-      input.ReadWord();
-      string committerLine = input.ReadLine();
-      CommittedDate = Utility.StripDate(committerLine, out committerLine);
-      Committer = Contributer.Parse(committerLine);
+        String authorLine = contents.Substring(index-authorLength, authorLength);
+        AuthoredDate = Utility.StripDate(authorLine, out authorLine);
+        Author = Contributer.Parse(authorLine);
 
-      //Skip extra '\n'
-      input.Position++;
-      Message = input.ReadToEnd().GetString().TrimEnd();
+        // Skip the \n
+        index++;
+      }
+      
+      // Read committer from the stream
+      if (contents.Substring(index, 10) == "committer ")
+      {
+        index += 10;
+        int committerLength = 0;
+        while (contents[index] != '\n')
+        {
+          committerLength++;
+          index++;
+        }
+
+        String committerLine = contents.Substring(index-committerLength, committerLength);
+        CommittedDate = Utility.StripDate(committerLine, out committerLine);
+        Committer = Contributer.Parse(committerLine);
+
+        // Skip the \n
+        index++;
+      }
+
+      index++; // extra \n
+
+      Message = contents.Substring(index);
     }
 
     public override byte[] Serialize()
