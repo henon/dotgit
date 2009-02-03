@@ -81,13 +81,10 @@ namespace dotGit.Objects.Storage
         }
       }
 
-      string s = sb.ToString();
 
-      if (!consume)
-        BaseStream.Position = position;
-      else
-        BaseStream.Position -= (bufLength - (index + 1));
-      return s;
+      BaseStream.Position -= ( (bufLength - index) - (consume ? 1 : 0 ));
+
+      return sb.ToString();
 
     }
 

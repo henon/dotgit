@@ -13,9 +13,10 @@ namespace dotGit.Index
 	{
 		internal IndexEntry(GitObjectReader source)
 		{
+      long startPosition = source.Position;
 
-			Created = new IndexTime(source);
-			Modified = new IndexTime(source);
+      Created = GetFileTime(source);
+      Modified = GetFileTime(source);
 
       // TODO: really parse all the var stuff
       var dev = System.Net.IPAddress.HostToNetworkOrder(source.ReadBytes(4).ToInt());
@@ -33,8 +34,23 @@ namespace dotGit.Index
 			Stage = (IndexStage)flags[0].GetBits(2, 2);
 			
 			Path = source.ReadToNull();
-			
-			string rest = source.ReadToNextNonNull().GetString();
+
+      // Read bytes until the length of this entry can be divided by 8 and the name (Path) is still char(0) terminated
+      // http://kerneltrap.org/index.php?q=mailarchive/git/2008/2/11/810634
+
+      long endPosition = source.Position;
+      long length = (endPosition - startPosition) ;
+      if( length %8 != 0)
+        source.ReadBytes(8 - ((int)length % 8));
+
+    }
+
+    private DateTime GetFileTime(GitObjectReader source)
+    {
+      int seconds = System.Net.IPAddress.HostToNetworkOrder(source.ReadBytes(4).ToInt());
+      int nanoseconds = System.Net.IPAddress.HostToNetworkOrder(source.ReadBytes(4).ToInt());
+
+      return Utility.UnixEPOCH.AddSeconds(seconds).AddMilliseconds(nanoseconds / 1000);
     }
 
     #region Properties
@@ -57,13 +73,13 @@ namespace dotGit.Index
 			private set;
 		}
 
-		public IndexTime Created
+    public DateTime Created
 		{
 			get;
 			private set;
 		}
 
-		public IndexTime Modified
+    public DateTime Modified
 		{
 			get;
 			private set;
