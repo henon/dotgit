@@ -285,5 +285,19 @@ namespace dotGit
 
     #endregion
 
+    #region Staging Methods
+
+    public List<Sha> StageDirectory(string subPath)
+    {
+      throw new NotImplementedException();
+    }
+
+    public Sha Stage(string path)
+    {
+      throw new NotImplementedException();
+    }
+
+    #endregion
+
   }
 }
