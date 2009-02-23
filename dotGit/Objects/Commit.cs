@@ -161,7 +161,7 @@ namespace dotGit.Objects
       }
 
       // Check if we can get an author from the next characters
-      if (contents.Substring(index, 7) == "author ")
+      if (index + 7 < length && contents.Substring(index, 7) == "author ")
       {
         index += 7;
         int authorLength = 0;
@@ -171,16 +171,16 @@ namespace dotGit.Objects
           index++;
         }
 
-        String authorLine = contents.Substring(index-authorLength, authorLength);
+        String authorLine = contents.Substring(index - authorLength, authorLength);
         AuthoredDate = Utility.StripDate(authorLine, out authorLine);
         Author = Contributer.Parse(authorLine);
 
         // Skip the \n
         index++;
       }
-      
+
       // Read committer from the stream
-      if (contents.Substring(index, 10) == "committer ")
+      if (index + 9 < length && contents.Substring(index, 10) == "committer ")
       {
         index += 10;
         int committerLength = 0;
@@ -190,7 +190,7 @@ namespace dotGit.Objects
           index++;
         }
 
-        String committerLine = contents.Substring(index-committerLength, committerLength);
+        String committerLine = contents.Substring(index - committerLength, committerLength);
         CommittedDate = Utility.StripDate(committerLine, out committerLine);
         Committer = Contributer.Parse(committerLine);
 
@@ -199,8 +199,11 @@ namespace dotGit.Objects
       }
 
       index++; // extra \n
+      if (index < contents.Length)
+        Message = contents.Substring(index);
+      else
+        Message = String.Empty;
 
-      Message = contents.Substring(index);
     }
 
     public override byte[] Serialize()

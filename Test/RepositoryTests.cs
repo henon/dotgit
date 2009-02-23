@@ -17,6 +17,7 @@ namespace Test
 
 		[Test]
 		[ExpectedException(typeof(ArgumentNullException))]
+    [Category("Repository")]
 		public void RepositoryThrowsArgumentExceptionForNullPath()
 		{
 			Repository.Open(null);
@@ -24,12 +25,14 @@ namespace Test
 
 		[Test]
 		[ExpectedException(typeof(ArgumentNullException))]
+    [Category("Repository")]
 		public void RepositoryThrowsArgumentExceptionForEmptyPath()
 		{
 			Repository.Open(String.Empty);
 		}
 
 		[Test]
+    [Category("Repository")]
 		public void RepositoryShouldNotThrowExceptionWhenWalkingTree()
 		{
 			Repository repo = Repository.Open(Global.TestRepositoryPath);
@@ -46,6 +49,7 @@ namespace Test
 
    
 		[Test]
+    [Category("Repository")]
 		public void TestRepositoryShouldContainTagZeroPointOne()
 		{
 			Repository repo = Repository.Open(Global.TestRepositoryPath);
@@ -61,6 +65,7 @@ namespace Test
 		}
 
     [Test]
+    [Category("Repository")]
     public void TestRepositoryShouldThrowIndexOutOfRangeExceptionForInvalidTag()
     {
       Repository repo = Repository.Open(Global.TestRepositoryPath);
@@ -81,6 +86,7 @@ namespace Test
 
 
     [Test]
+    [Category("Repository")]
     public void SHAOfTagZeroPointOneShouldBeTestRepositorySHA()
     {
       Repository repo = Repository.Open(Global.TestRepositoryPath);

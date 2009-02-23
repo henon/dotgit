@@ -226,6 +226,12 @@ namespace dotGit.Objects
       // For now we assume that the input is in a somewhat proper format (read from pack file)
       input = input.Trim();
 
+      if (input.Length < 16)
+      {
+        remainder = input;
+        return DateTime.MinValue;
+      }
+
       string capture = input.Substring(input.Length - 16, 16);
       remainder = input.Substring(0, input.Length - 16).Trim();
 

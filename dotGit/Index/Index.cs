@@ -10,7 +10,7 @@ using dotGit.Objects.Storage;
 
 namespace dotGit.Index
 {
-  public class Index
+  public class Index : IEnumerable<IndexEntry>
   {
     private static readonly string HEADER = "DIRC";
     private static readonly int[] VERSIONS = new int[] { 2 };
@@ -18,7 +18,7 @@ namespace dotGit.Index
     internal Index(Repository repo)
     {
       Repo = repo;
-
+      
       using (GitObjectReader stream = new GitObjectReader(
         new FileStream(Path.Combine(Repo.GitDir.FullName, "index"), System.IO.FileMode.Open, FileAccess.Read, FileShare.Read, 8192)))
       {
@@ -47,6 +47,9 @@ namespace dotGit.Index
         string indexSHA = stream.ReadToEnd().ToSHAString();
       }
     }
+
+
+    #region Properties
 
     private Repository Repo
     { get; set; }
@@ -82,5 +85,67 @@ namespace dotGit.Index
     {
       get { return !Entries.Any(e => e.Stage != IndexStage.Normal); }
     }
+
+    #endregion
+
+    #region Enumerator / Index / Contains
+
+    public bool Contains(string sha)
+    {
+      throw new NotImplementedException();
+    }
+
+    public IndexEntry this[string sha]
+    {
+      get
+      {
+        throw new NotImplementedException("To Implement");
+      }
+    }
+    
+    public IEnumerator<IndexEntry> GetEnumerator()
+    {
+      return Entries.GetEnumerator();
+    }
+
+    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+    {
+      return Entries.GetEnumerator();
+    }
+
+    #endregion
+
+    #region Public Methods
+
+    public List<string> ChangedFiles()
+    {
+      List<string> list = new List<string>();
+
+      foreach (IndexEntry entry in this)
+      {
+        DateTime lmt = File.GetLastWriteTimeUtc(Path.Combine(Repo.RepositoryDir.FullName, entry.Path));
+        
+        
+        // Windows only stores seconds so we need to correct the git timestamp for that.
+
+        long entryTicks = entry.Modified.Ticks;
+        long lastm = lmt.Ticks;
+        if (entryTicks % 1000 == 0)
+          lastm = lastm - lastm % 10000000;
+
+        if (lastm != entryTicks)
+        {
+          TimeSpan ts = lmt - Utility.UnixEPOCH;
+          TimeSpan ts2 = entry.Modified - Utility.UnixEPOCH;
+          list.Add(entry.Path);
+        }
+      }
+
+      return list;
+    }
+
+    #endregion
+
+    
   }
 }

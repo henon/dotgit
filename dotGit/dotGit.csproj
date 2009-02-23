@@ -62,7 +62,6 @@
     <Compile Include="Index\Index.cs" />
     <Compile Include="Index\IndexEntry.cs" />
     <Compile Include="Index\IndexEntryCollection.cs" />
-    <Compile Include="Index\IndexTime.cs" />
     <Compile Include="Objects\Storage\GitObjectReader.cs" />
     <Compile Include="Generic\InternalWritableList.cs" />
     <Compile Include="Generic\Sha.cs" />
