@@ -11,6 +11,9 @@ using Winterdom.IO.FileMap;
 
 namespace dotGit.Objects.Storage
 {
+  /// <summary>
+  /// This class wraps both <see cref="PackFileV2" /> and <see cref="PackIndexV2" /> for fast pack file processing
+  /// </summary>
   public class PackV2 : Pack
   {
     private MemoryMappedFile _map;
@@ -47,6 +50,9 @@ namespace dotGit.Objects.Storage
 
     #region Properties
 
+    /// <summary>
+    /// The version of packfiles this <see cref="Pack" /> implementation supports
+    /// </summary>
     public override int Version
     {
       get { return 2; }
@@ -107,6 +113,11 @@ namespace dotGit.Objects.Storage
 
     }
 
+    /// <summary>
+    /// Find an object in this pack file by SHA
+    /// </summary>
+    /// <param name="sha">The SHA the object is identified by</param>
+    /// <returns>The object found of type: <see cref="IStorableObject" /></returns>
     public override IStorableObject GetObject(string sha)
     {
       System.Diagnostics.Debug.WriteLine("Fetching object with sha: {0}".FormatWith(sha));

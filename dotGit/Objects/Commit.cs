@@ -10,6 +10,10 @@ using System.Linq;
 
 namespace dotGit.Objects
 {
+
+  /// <summary>
+  /// A Commit references a tree which is a copy of the working directory
+  /// </summary>
   public class Commit : GitObject
   {
     private string _treeSha = null;
@@ -206,6 +210,10 @@ namespace dotGit.Objects
 
     }
 
+    /// <summary>
+    /// Serializes this commit to a byte array
+    /// </summary>
+    /// <returns>byte[] containing this commit's contents</returns>
     public override byte[] Serialize()
     {
       throw new NotImplementedException();
@@ -214,17 +222,30 @@ namespace dotGit.Objects
 
     #region System Overrides
 
+    /// <summary>
+    /// Returns a string representing this Commit.
+    /// </summary>
+    /// <returns></returns>
     public override string ToString()
     {
       return SHA;
     }
 
-
+    /// <summary>
+    /// Compares commit to other commit on SHA
+    /// </summary>
+    /// <param name="obj">The other commit to compare with</param>
+    /// <returns>Boolean indicating this object is equal to <paramref name="obj"/></returns>
     public bool Equals(Commit c)
     {
       return String.Equals(c.SHA, SHA);
     }
 
+    /// <summary>
+    /// Compares commit to other commit on SHA
+    /// </summary>
+    /// <param name="obj">The other commit to compare with</param>
+    /// <returns>Boolean indicating this object is equal to <paramref name="obj"/></returns>
     public override bool Equals(object obj)
     {
       if (obj is Commit)
@@ -233,7 +254,10 @@ namespace dotGit.Objects
         return false;
 
     }
-
+    /// <summary>
+    /// Returns the hashcode for this commit
+    /// </summary>
+    /// <returns></returns>
     public override int GetHashCode()
     {
       return SHA.GetHashCode();
