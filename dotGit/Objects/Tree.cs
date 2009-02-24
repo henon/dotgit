@@ -11,7 +11,7 @@ using dotGit.Exceptions;
 namespace dotGit.Objects
 {
 	/// <summary>
-	/// Represents a tree in a git repository. Has Children of type TreeNode which can either be a blog or a tree.
+	/// Represents a tree in a git repository. Has Children of type TreeNode which can either be a blob or a tree.
 	/// </summary>
 	public class Tree : TreeNode
 	{
