@@ -140,6 +140,29 @@ namespace dotGit.Objects
       private set;
     }
 
+    public IEnumerable<Commit> Ancestors
+    {
+        get
+        {
+            var ancestors = new HashSet<Commit>();
+            GetAncestorsRecursive(this, ancestors);
+            return ancestors.OrderByDescending(commit => commit.CommittedDate).ToArray();
+        }
+    }
+
+      private static void GetAncestorsRecursive(Commit commit, HashSet<Commit> ancestors) 
+      {
+          if (commit.Parents == null)
+              return;
+          foreach (var parent in commit.Parents)
+          {
+              if (ancestors.Contains(parent))
+                  continue;
+              ancestors.Add(parent);
+              GetAncestorsRecursive(parent, ancestors);
+          }
+      }
+
     /// <summary>
     /// Loads the commit from the GitObjectReader
     /// </summary>
