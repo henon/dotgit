@@ -23,31 +23,25 @@ namespace TestGUI
         public Browser()
         {
             InitializeComponent();
-            m_list.ItemsSource = m_commits;
+            m_list.SelectionChanged += (o, args) => SelectCommit(m_list.SelectedItem as Commit);
         }
-        ObservableCollection<Commit> m_commits = new ObservableCollection<Commit>();
 
+        private void SelectCommit(Commit commit)
+        {
+            m_tree.ItemsSource = commit.Tree.Children;
+            //(m_tree.ItemContainerGenerator.ContainerFromIndex(0) as TreeViewItem).IsExpanded = true;
+        }
+
+        // load
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             var url = m_url_textbox.Text;
             Repository repo = Repository.Open(url);
-            m_commits.Clear();
-            WalkHistory(repo.HEAD.Commit); // Walk history from HEAD
-            //WalkHistory(repo.Branches["experimental"].Commit); // Walk history from branch
+            var list = repo.HEAD.Commit.Ancestors.ToList();
+            list.Insert(0, repo.HEAD.Commit);
+            m_list.ItemsSource = list;
+            m_list.SelectedIndex = 0;
         }
 
-        private void WalkHistory(Commit commit)
-        {
-            m_commits.Add(commit);
-            //Console.WriteLine("SHA: " + commit.SHA);
-            //Console.WriteLine("Committed on: " + commit.CommittedDate);
-            //Console.WriteLine("By: " + commit.Committer);
-
-            if (commit.HasParents)
-            {
-                foreach (Commit parent in commit.Parents)
-                    WalkHistory(parent);
-            }
-        }
     }
 }
