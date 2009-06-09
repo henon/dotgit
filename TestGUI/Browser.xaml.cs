@@ -23,11 +23,13 @@ namespace TestGUI
         public Browser()
         {
             InitializeComponent();
-            m_list.SelectionChanged += (o, args) => SelectCommit(m_list.SelectedItem as Commit);
+            m_commits.SelectionChanged += (o, args) => SelectCommit(m_commits.SelectedItem as Commit);
         }
 
         private void SelectCommit(Commit commit)
         {
+            if (commit == null)
+                return;
             m_tree.ItemsSource = commit.Tree.Children;
             //(m_tree.ItemContainerGenerator.ContainerFromIndex(0) as TreeViewItem).IsExpanded = true;
         }
@@ -37,10 +39,12 @@ namespace TestGUI
         {
             var url = m_url_textbox.Text;
             Repository repo = Repository.Open(url);
+            m_branches.ItemsSource = repo.Branches;
+            m_tags.ItemsSource = repo.Tags;
             var list = repo.HEAD.Commit.Ancestors.ToList();
             list.Insert(0, repo.HEAD.Commit);
-            m_list.ItemsSource = list;
-            m_list.SelectedIndex = 0;
+            m_commits.ItemsSource = list;
+            m_commits.SelectedIndex = 0;
         }
 
     }
