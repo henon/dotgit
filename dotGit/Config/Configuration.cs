@@ -48,6 +48,13 @@ namespace dotGit.Config
     internal Dictionary<string, NameValueCollection> Data =
        new Dictionary<string, NameValueCollection>();
 
+    public IEnumerable<Section> Sections
+    {
+        get
+        {
+            return Data.Select(pair => new Section(this, pair.Key, pair.Value)).ToArray();
+        }
+    }
     #endregion
 
     #region Properties
@@ -57,6 +64,7 @@ namespace dotGit.Config
       get;
       private set;
     }
+
     #endregion
 
     #region Constructors
@@ -390,6 +398,8 @@ namespace dotGit.Config
     }
 
     #endregion
+
+
 
 
 
