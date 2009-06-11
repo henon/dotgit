@@ -4,7 +4,7 @@
         xmlns:objects="clr-namespace:dotGit.Objects;assembly=dotGit"
         xmlns:config="clr-namespace:dotGit.Config;assembly=dotGit"
     Title="Repository Browser" MinHeight="423" MinWidth="568">
-    
+
     <Window.Resources>
         <!--repository tree templates-->
         <HierarchicalDataTemplate DataType="{x:Type objects:Tree}" ItemsSource="{Binding Path=Children}">
@@ -13,7 +13,7 @@
         <DataTemplate DataType="{x:Type objects:Blob}">
             <TextBlock Text="{Binding Path}" TextTrimming="CharacterEllipsis" Foreground="CornflowerBlue" ToolTip="{Binding SHA}"/>
         </DataTemplate>
-        
+
         <!--config tree templates-->
         <HierarchicalDataTemplate DataType="{x:Type config:Section}" ItemsSource="{Binding Path=Entries}">
             <TextBlock Text="{Binding Name}" TextTrimming="CharacterEllipsis"/>
@@ -26,7 +26,7 @@
             </StackPanel>
         </DataTemplate>
     </Window.Resources>
-    
+
     <DockPanel>
         <Menu  DockPanel.Dock="Top">
             <MenuItem Header="Repository">
@@ -36,103 +36,133 @@
         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,5">
             <Label>Path to repository:</Label>
             <TextBox Name="m_url_textbox">..\..\..\</TextBox>
-            <Button Click="Button_Click" Margin="5,0,0,0">Load</Button>
+            <Button Click="OnLoadRepository" Margin="5,0,0,0">Load</Button>
             <!--<Label Margin="10,0,0,0">Select a commit. Differences to the previous commit are highlited in red.</Label>-->
         </StackPanel>
-        <TabControl SelectedIndex="2">
-            
+        <TabControl SelectedIndex="0">
+
             <!--repository-->
-            <TabItem Header="Repository" IsSelected="True">
-                <Grid>
+            <!--<TabItem Header="Repository" IsSelected="True">
+
+            </TabItem>-->
+
+            <!--commit browser-->
+            <TabItem Header="Browser">
+                <Grid Margin="0,10,0,0">
                     <Grid.RowDefinitions>
                         <RowDefinition/>
+                        <RowDefinition Height="2"/>
                         <RowDefinition/>
                     </Grid.RowDefinitions>
-                    
-                    <!--branches-->
-                    <DockPanel>
-                        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
-                            <Label>Current branch:</Label>
-                            <ComboBox Width="100" Text="TODO"></ComboBox>
-                        </StackPanel>
-                    <Label DockPanel.Dock="Top">Branches:</Label>
-                    <ListView Name="m_branches" DockPanel.Dock="Top">
-                        <ListView.View>
-                            <GridView>
-                                <GridView.Columns>
-                                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Path=Name}"/>
-                                    <GridViewColumn Header="Path" DisplayMemberBinding="{Binding Path=Path}"/>
-                                    <GridViewColumn Header="Commit" DisplayMemberBinding="{Binding Path=Commit}"/>
-                                    <GridViewColumn Header="SHA" DisplayMemberBinding="{Binding Path=SHA}"/>
-                                </GridView.Columns>
-                            </GridView>
-                        </ListView.View>
-                    </ListView>
+
+
+                    <!--upper half-->
+
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="2"/>
+                            <ColumnDefinition Width="3*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!--tags and branches-->
+                        <TabControl SelectedIndex="0">
+
+
+                            <!--branches-->
+                            <TabItem Header="Branches" Padding="5,0">
+                                <DockPanel Margin="0">
+                                    <!--<TextBlock DockPanel.Dock="Top" Background="Silver">Branches:</TextBlock>-->
+                                    <ListView Name="m_branches" DockPanel.Dock="Top">
+                                        <ListView.View>
+                                            <GridView>
+                                                <GridView.Columns>
+                                                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Path=Name}"/>
+                                                    <GridViewColumn Header="Path" DisplayMemberBinding="{Binding Path=Path}"/>
+                                                    <GridViewColumn Header="Commit" DisplayMemberBinding="{Binding Path=Commit}"/>
+                                                    <GridViewColumn Header="SHA" DisplayMemberBinding="{Binding Path=SHA}"/>
+                                                </GridView.Columns>
+                                            </GridView>
+                                        </ListView.View>
+                                    </ListView>
+                                </DockPanel>
+                            </TabItem>
+                            <TabItem Header="Tags" Padding="5,0">
+                                <!--tags-->
+                                <DockPanel Grid.Row="1">
+                                    <!--<TextBlock DockPanel.Dock="Top" Background="Silver">Tags:</TextBlock>-->
+                                    <ListView Name="m_tags" DockPanel.Dock="Top">
+                                        <ListView.View>
+                                            <GridView>
+                                                <GridView.Columns>
+                                                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Path=Name}"/>
+                                                    <GridViewColumn Header="SHA" DisplayMemberBinding="{Binding Path=SHA}"/>
+                                                    <GridViewColumn Header="Size" DisplayMemberBinding="{Binding Path=Size}"/>
+                                                    <GridViewColumn Header="Path" DisplayMemberBinding="{Binding Path=Path}"/>
+                                                    <GridViewColumn Header="Annotated" DisplayMemberBinding="{Binding Path=IsAnnotated}"/>
+                                                    <GridViewColumn Header="Date" DisplayMemberBinding="{Binding Path=TagDate}"/>
+                                                    <GridViewColumn Header="Tagger" DisplayMemberBinding="{Binding Path=Tagger}"/>
+                                                    <GridViewColumn Header="Message" DisplayMemberBinding="{Binding Path=Message}"/>
+                                                </GridView.Columns>
+                                            </GridView>
+                                        </ListView.View>
+                                    </ListView>
+                                </DockPanel>
+                            </TabItem>
+                        </TabControl>
+
+                        <!--commits-->
+                        <DockPanel Grid.Column="2">
+                            <TextBlock DockPanel.Dock="Top" Background="Silver" Name="m_commit_title">Commit history for</TextBlock>
+                            <ListView Name="m_commits" DockPanel.Dock="Top">
+                                <ListView.View>
+                                    <GridView>
+                                        <GridView.Columns>
+                                            <GridViewColumn Header="Message" DisplayMemberBinding="{Binding Path=Message}"/>
+                                            <GridViewColumn Header="Committer" DisplayMemberBinding="{Binding Path=Committer}"/>
+                                            <GridViewColumn Header="CommitedDate" DisplayMemberBinding="{Binding Path=CommittedDate}"/>
+                                            <GridViewColumn Header="Author" DisplayMemberBinding="{Binding Path=Author}"/>
+                                            <GridViewColumn Header="AuthoredDate" DisplayMemberBinding="{Binding Path=AuthoredDate}"/>
+                                            <GridViewColumn Header="SHA" DisplayMemberBinding="{Binding Path=SHA}" />
+                                            <GridViewColumn Header="Size" DisplayMemberBinding="{Binding Path=Size}" />
+                                        </GridView.Columns>
+                                    </GridView>
+                                </ListView.View>
+                            </ListView>
                         </DockPanel>
-                    
-                    <!--tags-->
-                    <DockPanel Grid.Row="1">
-                        <Label DockPanel.Dock="Top">Tags:</Label>
-                        <ListView Name="m_tags" DockPanel.Dock="Top">
-                            <ListView.View>
-                                <GridView>
-                                    <GridView.Columns>
-                                        <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Path=Name}"/>
-                                        <GridViewColumn Header="SHA" DisplayMemberBinding="{Binding Path=SHA}"/>
-                                        <GridViewColumn Header="Size" DisplayMemberBinding="{Binding Path=Size}"/>
-                                        <GridViewColumn Header="Path" DisplayMemberBinding="{Binding Path=Path}"/>
-                                        <GridViewColumn Header="Annotated" DisplayMemberBinding="{Binding Path=IsAnnotated}"/>
-                                        <GridViewColumn Header="Date" DisplayMemberBinding="{Binding Path=TagDate}"/>
-                                        <GridViewColumn Header="Tagger" DisplayMemberBinding="{Binding Path=Tagger}"/>
-                                        <GridViewColumn Header="Message" DisplayMemberBinding="{Binding Path=Message}"/>
-                                    </GridView.Columns>
-                                </GridView>
-                            </ListView.View>
-                        </ListView>
-                    </DockPanel>
+                        <GridSplitter Width="2" Grid.Column="1" ResizeBehavior="PreviousAndNext"/>
+
+                    </Grid>
+                    <GridSplitter Grid.Row="1" ResizeBehavior="PreviousAndNext" ResizeDirection="Rows" Height="2"/>
+
+
+                    <!--lower half-->
+
+
+                    <Grid Grid.Row="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="2"/>
+                            <ColumnDefinition Width="3*"/>
+                        </Grid.ColumnDefinitions>
+                        <!--tree-->
+                        <DockPanel  Grid.Column="0">
+                            <TextBlock DockPanel.Dock="Top" Background="Silver" Name="m_tree_title">Repository</TextBlock>
+                            <TreeView Name="m_tree"/>
+                        </DockPanel>
+
+                        <GridSplitter ResizeBehavior="PreviousAndNext" Width="2" Grid.Column="1"/>
+                        <!--object-->
+                        <DockPanel  Grid.Column="2">
+                            <TextBlock DockPanel.Dock="Top" Background="Silver" Name="m_object_title">Object</TextBlock>
+                            <RichTextBox Name="m_object" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"/>
+                        </DockPanel>
+
+                    </Grid>
                 </Grid>
             </TabItem>
-            
-            <!--commit browser-->
-            <TabItem Header="Commits">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="2*"/>
-                        <ColumnDefinition Width="2"/>
-                        <ColumnDefinition Width="1*"/>
-                    </Grid.ColumnDefinitions>
 
-                    <!--commits-->
-                    <DockPanel>
-                        <TextBlock DockPanel.Dock="Top" Background="Silver">Commits</TextBlock>
-                        <ListView Name="m_commits" DockPanel.Dock="Top">
-                            <ListView.View>
-                                <GridView>
-                                    <GridView.Columns>
-                                        <GridViewColumn Header="Message" DisplayMemberBinding="{Binding Path=Message}"/>
-                                        <GridViewColumn Header="Committer" DisplayMemberBinding="{Binding Path=Committer}"/>
-                                        <GridViewColumn Header="CommitedDate" DisplayMemberBinding="{Binding Path=CommittedDate}"/>
-                                        <GridViewColumn Header="Author" DisplayMemberBinding="{Binding Path=Author}"/>
-                                        <GridViewColumn Header="AuthoredDate" DisplayMemberBinding="{Binding Path=AuthoredDate}"/>
-                                        <GridViewColumn Header="SHA" DisplayMemberBinding="{Binding Path=SHA}" />
-                                        <GridViewColumn Header="Size" DisplayMemberBinding="{Binding Path=Size}" />
-                                    </GridView.Columns>
-                                </GridView>
-                            </ListView.View>
-                        </ListView>
-                    </DockPanel>
-                    <GridSplitter Width="2" Grid.Column="1" ResizeBehavior="PreviousAndNext"/>
-
-                    <!--tree-->
-                    <DockPanel  Grid.Column="2">
-                        <TextBlock DockPanel.Dock="Top" Background="Silver">Repository</TextBlock>
-                        <TreeView Name="m_tree">
-
-                        </TreeView>
-                    </DockPanel>
-                </Grid>
-            </TabItem>
-            
             <!--config-->
             <TabItem Header="Configuration">
                 <DockPanel>
@@ -140,32 +170,32 @@
                         <Button Click="OnLoadConfiguration">Load</Button>
                         <Button Click="OnSaveConfiguration">Save</Button>
                     </StackPanel>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="2*"/>
-                        <!--<ColumnDefinition Width="2"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*"/>
+                            <!--<ColumnDefinition Width="2"/>
                         <ColumnDefinition Width="1*"/>-->
-                    </Grid.ColumnDefinitions>
+                        </Grid.ColumnDefinitions>
 
-                    <!--config tree-->
-                    <DockPanel  Grid.Column="0">
-                        <TextBlock DockPanel.Dock="Top" Background="Silver">Confgiuration</TextBlock>
-                        <TreeView Name="m_config_tree">
+                        <!--config tree-->
+                        <DockPanel  Grid.Column="0">
+                            <TextBlock DockPanel.Dock="Top" Background="Silver">Confgiuration</TextBlock>
+                            <TreeView Name="m_config_tree">
 
-                        </TreeView>
-                    </DockPanel>
-                    
-                    <!--config editor-->
-                    <!--<DockPanel Grid.Column="2" >
+                            </TreeView>
+                        </DockPanel>
+
+                        <!--config editor-->
+                        <!--<DockPanel Grid.Column="2" >
                         <TextBlock DockPanel.Dock="Top" Background="Silver">Edit ... </TextBlock>
                         <Label Name="m_config_name" DockPanel.Dock="Top" ></Label>
                         <TextBox Name="m_config_value" DockPanel.Dock="Top" ></TextBox>
                     </DockPanel>
                     <GridSplitter Width="2" Grid.Column="1" ResizeBehavior="PreviousAndNext"/>-->
-                </Grid>
-                    </DockPanel>
+                    </Grid>
+                </DockPanel>
             </TabItem>
-            
+
         </TabControl>
     </DockPanel>
 </Window>
