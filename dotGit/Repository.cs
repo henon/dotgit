@@ -111,7 +111,8 @@ namespace dotGit
 
           _branches.Add(new Refs.Branch(this, Path.Combine(@"refs\heads", Path.GetFileName(file)), sha));
         }
-
+        if (_packedRefs == null)
+          return;
         string[] paths = _packedRefs.Keys.Where(path => path.StartsWith("refs/heads")).ToArray();
         foreach (string path in paths)
         {
@@ -146,6 +147,8 @@ namespace dotGit
           _tags.Add(Tag.Load(this, sha, Path.Combine(@"refs\tags", Path.GetFileName(file))));
         }
 
+        if (_packedRefs == null)
+            return;
         string[] paths = _packedRefs.Keys.Where(path => path.StartsWith("refs/tags")).ToArray();
         foreach (string path in paths)
         {
