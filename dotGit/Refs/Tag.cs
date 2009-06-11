@@ -127,7 +127,8 @@ namespace dotGit.Refs
       {
         input.Rewind();
 
-        // Skip object keyword
+        // Skip "tag" and "object" keywords
+        input.ReadWord();
         input.ReadWord();
 
         TaggedObjectSHA = input.ReadLine().Trim();
