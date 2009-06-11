@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{3A17B548-0F21-4A0D-A823-A96BDE0A7523}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -48,6 +48,8 @@
     <Compile Include="Config\ConfigKeys.cs" />
     <Compile Include="Config\ConfigSections.cs" />
     <Compile Include="Config\Configuration.cs" />
+    <Compile Include="Config\Entry.cs" />
+    <Compile Include="Config\Section.cs" />
     <Compile Include="Diff\Diff.cs" />
     <Compile Include="Diff\Engine\DiffEngine.cs" />
     <Compile Include="Diff\Engine\DiffResultsSpan.cs" />
